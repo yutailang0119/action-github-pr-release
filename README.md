@@ -8,7 +8,18 @@ This action is inspired by [x-motemen/git-pr-release](https://github.com/x-motem
 
 ## Features
 
-TBC
+This action's features is based on [x-motemen/git-pr-release](https://github.com/x-motemen/git-pr-release).
+
+- [ ] Select branchs
+    - Production branch
+    - Staging branch
+- [ ] Use template
+- [ ] Add labels
+- [ ] Replace mention
+- [ ] Support command options
+    - [ ] `squash`: Squash and merge
+    - [ ] `no-fetch`: Do not fetch from remote repo before determining target PRs
+
 
 ## Exaple
 
