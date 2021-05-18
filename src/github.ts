@@ -1,19 +1,16 @@
 import * as github from '@actions/github'
-import {Repository} from './Repository'
+import {Repo} from './Repo'
 
-async function compareSHAs(
-  token: string,
-  repository: Repository
-): Promise<string[]> {
+async function compareSHAs(token: string, repo: Repo): Promise<string[]> {
   const octokit = github.getOctokit(token)
 
   // https://docs.github.com/en/rest/reference/repos#compare-two-commits
   const shas = await octokit
     .paginate(octokit.rest.repos.compareCommits, {
-      owner: repository.owner,
-      repo: repository.name,
-      base: repository.productionBranch,
-      head: repository.stagingBranch,
+      owner: repo.owner,
+      repo: repo.name,
+      base: repo.productionBranch,
+      head: repo.stagingBranch,
       per_page: 100
     })
     .then(result => {
