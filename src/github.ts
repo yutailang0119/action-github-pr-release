@@ -77,7 +77,7 @@ export class GitHub {
           repo: this.repo,
           base: this.productionBranch,
           head: this.stagingBranch,
-          per_page: 5,
+          per_page: 100,
           page: page
         })
         .then(response => {
