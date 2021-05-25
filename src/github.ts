@@ -5,21 +5,11 @@ export class GitHub {
   token: string
   owner: string
   repo: string
-  productionBranch: string
-  stagingBranch: string
 
-  constructor(
-    token: string,
-    owner: string,
-    repo: string,
-    productionBranch: string,
-    stagingBranch: string
-  ) {
+  constructor(token: string, owner: string, repo: string) {
     this.token = token
     this.owner = owner
     this.repo = repo
-    this.productionBranch = productionBranch
-    this.stagingBranch = stagingBranch
   }
 
   async associatedPullRequest(expression: string): Promise<Maybe<PullRequest>> {
@@ -64,7 +54,7 @@ export class GitHub {
     })
   }
 
-  async compareSHAs(): Promise<string[]> {
+  async compareSHAs(base: string, head: string): Promise<string[]> {
     const octokit = github.getOctokit(this.token)
 
     // https://docs.github.com/en/rest/reference/repos#compare-two-commits
@@ -75,8 +65,8 @@ export class GitHub {
         .compareCommits({
           owner: this.owner,
           repo: this.repo,
-          base: this.productionBranch,
-          head: this.stagingBranch,
+          base: base,
+          head: head,
           per_page: 100,
           page: page
         })

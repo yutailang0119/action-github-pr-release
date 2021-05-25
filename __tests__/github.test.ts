@@ -8,8 +8,8 @@ test('compareSHAs', async () => {
   const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
   const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
 
-  const github = new GitHub(token, owner, repo, productionBranch, stagingBranch)
+  const github = new GitHub(token, owner, repo)
 
-  const result = await github.compareSHAs()
+  const result = await github.compareSHAs(productionBranch, stagingBranch)
   expect(result).not.toEqual([])
 })
