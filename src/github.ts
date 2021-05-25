@@ -68,20 +68,39 @@ export class GitHub {
     const octokit = github.getOctokit(this.token)
 
     // https://docs.github.com/en/rest/reference/repos#compare-two-commits
-    const shas = await octokit
-      .paginate(octokit.rest.repos.compareCommits, {
-        owner: this.owner,
-        repo: this.repo,
-        base: this.productionBranch,
-        head: this.stagingBranch,
-        per_page: 100
-      })
-      .then(result => {
-        return result.commits.map(commit => {
-          return commit.sha
+    let page: number | undefined = undefined
+    let shas: string[] = []
+    while (!Number.isNaN(page)) {
+      await octokit.rest.repos
+        .compareCommits({
+          owner: this.owner,
+          repo: this.repo,
+          base: this.productionBranch,
+          head: this.stagingBranch,
+          per_page: 5,
+          page: page
         })
-      })
+        .then(response => {
+          response.data.commits.forEach(commit => {
+            shas.push(commit.sha)
+          })
 
+          // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
+          const next: string | undefined = ((response.headers.link || '').match(
+            /<([^>]+)>;\s*rel="next"/
+          ) || [])[1]
+          if (next === undefined) {
+            page = NaN
+            return
+          }
+          const p = new URL(next).searchParams.get('page')
+          if (p === null) {
+            page = NaN
+            return
+          }
+          page = Number(p)
+        })
+    }
     return new Promise(resolve => {
       resolve(shas)
     })
