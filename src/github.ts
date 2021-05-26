@@ -59,6 +59,7 @@ export class GitHub {
       }
     }
     `
+
     const {repository} = await octokit.graphql<{repository: Repository}>(
       query,
       {
@@ -68,9 +69,11 @@ export class GitHub {
       }
     )
     const commit = repository.object as Commit
+
     if (commit.associatedPullRequests?.edges === null) return null
     if (commit.associatedPullRequests?.edges === undefined) return null
     if (commit.associatedPullRequests?.edges[0]?.node === undefined) return null
+
     const pullRequest = commit.associatedPullRequests?.edges[0]?.node
     return new Promise(resolve => {
       resolve(pullRequest)
@@ -80,10 +83,10 @@ export class GitHub {
   async compareSHAs(base: string, head: string): Promise<string[]> {
     const octokit = github.getOctokit(this.token)
 
-    // https://docs.github.com/en/rest/reference/repos#compare-two-commits
     let page: number | undefined = undefined
     let shas: string[] = []
     while (!Number.isNaN(page)) {
+      // https://docs.github.com/en/rest/reference/repos#compare-two-commits
       await octokit.rest.repos
         .compareCommits({
           owner: this.owner,
@@ -97,7 +100,6 @@ export class GitHub {
           response.data.commits.forEach(commit => {
             shas.push(commit.sha)
           })
-
           // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
           const next: string | undefined = ((response.headers.link || '').match(
             /<([^>]+)>;\s*rel="next"/
@@ -114,6 +116,7 @@ export class GitHub {
           page = Number(p)
         })
     }
+
     return new Promise(resolve => {
       resolve(shas)
     })
