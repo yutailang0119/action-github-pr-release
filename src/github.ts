@@ -12,6 +12,29 @@ export class GitHub {
     this.repo = repo
   }
 
+  async repositoryId(): Promise<string> {
+    const octokit = github.getOctokit(this.token)
+
+    const query = `
+    query repositorId($owner: String!, $repo: String!) {
+      repository(owner: $owner, name: $repo) {
+        id
+      }
+    }
+    `
+    const {repository} = await octokit.graphql<{repository: Repository}>(
+      query,
+      {
+        owner: this.owner,
+        repo: this.repo
+      }
+    )
+
+    return new Promise(resolve => {
+      resolve(repository.id)
+    })
+  }
+
   async associatedPullRequest(expression: string): Promise<Maybe<PullRequest>> {
     const octokit = github.getOctokit(this.token)
 
