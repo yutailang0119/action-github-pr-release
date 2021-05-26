@@ -80,7 +80,10 @@ export class GitHub {
     })
   }
 
-  async compareSHAs(base: string, head: string): Promise<string[]> {
+  async compareSHAs(
+    baseRefName: string,
+    headRefName: string
+  ): Promise<string[]> {
     const octokit = github.getOctokit(this.token)
 
     let page: number | undefined = undefined
@@ -91,8 +94,8 @@ export class GitHub {
         .compareCommits({
           owner: this.owner,
           repo: this.repo,
-          base: base,
-          head: head,
+          base: baseRefName,
+          head: headRefName,
           per_page: 100,
           page: page
         })
