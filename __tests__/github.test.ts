@@ -1,6 +1,18 @@
 import * as process from 'process'
 import {GitHub} from '../src/github'
 
+test('repositoryId', async () => {
+  const token = process.env.TEST_TOKEN ?? ''
+  const owner = process.env.TEST_REPOSITORY_OWNER ?? ''
+  const repo = process.env.TEST_REPOSITORY_NAME ?? ''
+  const repositoryId = process.env.TEST_REPOSITORY_ID ?? ''
+
+  const github = new GitHub(token, owner, repo)
+
+  const result = await github.repositoryId()
+  expect(result).toEqual(repositoryId)
+})
+
 test('associatedPullRequest', async () => {
   const token = process.env.TEST_TOKEN ?? ''
   const owner = process.env.TEST_REPOSITORY_OWNER ?? ''
