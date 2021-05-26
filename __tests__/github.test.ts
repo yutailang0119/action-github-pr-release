@@ -1,6 +1,19 @@
 import * as process from 'process'
 import {GitHub} from '../src/github'
 
+test('associatedPullRequest', async () => {
+  const token = process.env.TEST_TOKEN ?? ''
+  const owner = process.env.TEST_REPOSITORY_OWNER ?? ''
+  const repo = process.env.TEST_REPOSITORY_NAME ?? ''
+  const commitSHA = process.env.TEST_COMMIT_SHA ?? ''
+  const pullRequestNumber = process.env.TEST_PULL_REQUEST_NUMBER ?? ''
+
+  const github = new GitHub(token, owner, repo)
+
+  const result = await github.associatedPullRequest(commitSHA)
+  expect(result!.number).toEqual(Number(pullRequestNumber))
+})
+
 test('compareSHAs', async () => {
   const token = process.env.TEST_TOKEN ?? ''
   const owner = process.env.TEST_REPOSITORY_OWNER ?? ''
