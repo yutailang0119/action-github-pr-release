@@ -1,16 +1,23 @@
 import * as process from 'process'
 import {GitHub} from '../src/github'
 
-test('repositoryId', async () => {
+test('detectExistingPullRequest', async () => {
   const token = process.env.TEST_TOKEN ?? ''
   const owner = process.env.TEST_REPOSITORY_OWNER ?? ''
   const repo = process.env.TEST_REPOSITORY_NAME ?? ''
+  const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
+  const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
   const repositoryId = process.env.TEST_REPOSITORY_ID ?? ''
+  const pullRequestNumber = Number(process.env.TEST_PULL_REQUEST_NUMBER)
 
   const github = new GitHub(token, owner, repo)
 
-  const result = await github.repositoryId()
-  expect(result).toEqual(repositoryId)
+  const result = await github.detectExistingPullRequest(
+    productionBranch,
+    stagingBranch
+  )
+  expect(result.repositoryId).toEqual(repositoryId)
+  expect(result.pullRequestNumber).toEqual(pullRequestNumber)
 })
 
 test('associatedPullRequest', async () => {
