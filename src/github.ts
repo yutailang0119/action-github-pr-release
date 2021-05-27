@@ -12,13 +12,23 @@ export class GitHub {
     this.repo = repo
   }
 
-  async repositoryId(): Promise<string> {
+  async detectExistingPullRequest(
+    baseRefName: string,
+    headRefName: string
+  ): Promise<{repositoryId: string; pullRequestNumber: Maybe<number>}> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
-    query repositorId($owner: String!, $repo: String!) {
+    query detectExistingReleasePullRequest($owner: String!, $repo: String!, $baseRefName: String!, $headRefName: String!) {
       repository(owner: $owner, name: $repo) {
         id
+        pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
+          edges {
+            node {
+              number
+            }
+          }
+        }
       }
     }
     `
@@ -26,12 +36,24 @@ export class GitHub {
       query,
       {
         owner: this.owner,
-        repo: this.repo
+        repo: this.repo,
+        baseRefName: baseRefName,
+        headRefName: headRefName
       }
     )
+    const pullRequestNumber = (): Maybe<number> => {
+      if (repository.pullRequests.edges === undefined) return null
+      if (repository.pullRequests.edges === null) return null
+      if (repository.pullRequests.edges[0]?.node === undefined) return null
+      if (repository.pullRequests.edges[0]?.node === null) return null
+      return repository.pullRequests.edges[0]?.node?.number
+    }
 
     return new Promise(resolve => {
-      resolve(repository.id)
+      resolve({
+        repositoryId: repository.id,
+        pullRequestNumber: pullRequestNumber()
+      })
     })
   }
 
