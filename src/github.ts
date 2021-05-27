@@ -70,8 +70,8 @@ export class GitHub {
     )
     const commit = repository.object as Commit
 
-    if (commit.associatedPullRequests?.edges === null) return null
     if (commit.associatedPullRequests?.edges === undefined) return null
+    if (commit.associatedPullRequests?.edges === null) return null
     if (commit.associatedPullRequests?.edges[0]?.node === undefined) return null
 
     const pullRequest = commit.associatedPullRequests?.edges[0]?.node
