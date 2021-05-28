@@ -15,7 +15,7 @@ export class GitHub {
   async detectExistingPullRequest(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequestNumber: Maybe<number>}> {
+  ): Promise<{repositoryId: string, pullRequestNumber: Maybe<number>}> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
