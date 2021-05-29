@@ -1,5 +1,11 @@
 import * as github from '@actions/github'
-import {Repository, Commit, PullRequest, Maybe} from '@octokit/graphql-schema'
+import {
+  Repository,
+  Commit,
+  PullRequest,
+  CreatePullRequestInput,
+  Maybe
+} from '@octokit/graphql-schema'
 
 type ExistingPullRequest = Maybe<{number: number}>
 
@@ -57,6 +63,49 @@ export class GitHub {
         repositoryId: repository.id,
         pullRequest: pullRequest()
       })
+    })
+  }
+
+  async createPullRequest(
+    repositoryId: string,
+    baseRefName: string,
+    headRefName: string,
+    title: string,
+    body: string
+  ): Promise<Maybe<number>> {
+    const octokit = github.getOctokit(this.token)
+
+    const query = `
+    mutation createPullRequest($input: CreatePullRequestInput!) {
+      createPullRequest(input: $input) {
+        pullRequest {
+          number
+        }
+      }
+    }
+    `
+    const input: CreatePullRequestInput = {
+      repositoryId: repositoryId,
+      baseRefName: baseRefName,
+      headRefName: headRefName,
+      title: title,
+      body: body
+    }
+    const {repository} = await octokit.graphql<{repository: Repository}>(
+      query,
+      input
+    )
+
+    const pullRequestNumber = (): Maybe<number> => {
+      if (repository.pullRequests.edges === undefined) return null
+      if (repository.pullRequests.edges === null) return null
+      if (repository.pullRequests.edges[0]?.node === undefined) return null
+      if (repository.pullRequests.edges[0]?.node === null) return null
+      if (repository.pullRequests.edges[0]?.node?.number === null) return null
+      return repository.pullRequests.edges[0]?.node?.number
+    }
+    return new Promise(resolve => {
+      resolve(pullRequestNumber())
     })
   }
 
