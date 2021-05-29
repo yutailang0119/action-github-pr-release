@@ -101,6 +101,36 @@ export class GitHub {
     })
   }
 
+  async updatePullRequest(
+    pullRequestId: string,
+    title: string,
+    body: string
+  ): Promise<Maybe<number>> {
+    const octokit = github.getOctokit(this.token)
+
+    const query = `
+    mutation updatePullRequest($input: UpdatePullRequestInput!) {
+      updatePullRequest(input: $input) {
+        pullRequest {
+          number
+        }
+      }
+    }
+    `
+    const input: UpdatePullRequestInput = {
+      pullRequestId: pullRequestId,
+      title: title,
+      body: body
+    }
+    const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
+      query,
+      input
+    )
+    return new Promise(resolve => {
+      resolve(pullRequest.number)
+    })
+  }
+
   async associatedPullRequest(expression: string): Promise<Maybe<PullRequest>> {
     const octokit = github.getOctokit(this.token)
 
