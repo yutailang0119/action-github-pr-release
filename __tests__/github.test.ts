@@ -17,7 +17,8 @@ test('detectExistingPullRequest', async () => {
     stagingBranch
   )
   expect(result.repositoryId).toEqual(repositoryId)
-  expect(result.pullRequestNumber).toEqual(pullRequestNumber)
+  expect(result.pullRequest).not.toBeNull()
+  expect(result.pullRequest!.number).toEqual(pullRequestNumber)
 })
 
 test('associatedPullRequest', async () => {
