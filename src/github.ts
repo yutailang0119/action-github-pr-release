@@ -30,11 +30,15 @@ export class GitHub {
     const query = `
     query detectExistingReleasePullRequest($owner: String!, $repo: String!, $baseRefName: String!, $headRefName: String!) {
       repository(owner: $owner, name: $repo) {
-        id
-        pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
-          edges {
-            node {
-              number
+        ... on Repository {
+          id
+          pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
+            edges {
+              node {
+                ... on PullRequest {
+                  number
+                }
+              }
             }
           }
         }
@@ -80,7 +84,9 @@ export class GitHub {
     mutation createPullRequest($input: CreatePullRequestInput!) {
       createPullRequest(input: $input) {
         pullRequest {
-          number
+          ... on PullRequest {
+            number
+          }
         }
       }
     }
@@ -112,7 +118,9 @@ export class GitHub {
     mutation updatePullRequest($input: UpdatePullRequestInput!) {
       updatePullRequest(input: $input) {
         pullRequest {
-          number
+          ... on PullRequest {
+            number
+          }
         }
       }
     }
@@ -142,10 +150,12 @@ export class GitHub {
             associatedPullRequests(first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
               edges {
                 node {
-                  title
-                  number
-                  author {
-                    login
+                  ... on PullRequest {
+                    title
+                    number
+                    author {
+                      login
+                    }
                   }
                 }
               }
@@ -153,7 +163,7 @@ export class GitHub {
           }
         }
       }
-    }
+    }    
     `
 
     const {repository} = await octokit.graphql<{repository: Repository}>(
