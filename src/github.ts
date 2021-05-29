@@ -8,6 +8,13 @@ import {
 } from '@octokit/graphql-schema'
 
 type ExistingPullRequest = Maybe<{number: number}>
+type MutatePullRequestInput = {
+  repositoryId: string
+  baseRefName: string
+  headRefName: string
+  title: string
+  body: Maybe<string>
+}
 
 export class GitHub {
   token: string
@@ -67,11 +74,7 @@ export class GitHub {
   }
 
   async createPullRequest(
-    repositoryId: string,
-    baseRefName: string,
-    headRefName: string,
-    title: string,
-    body: string
+    input: MutatePullRequestInput
   ): Promise<Maybe<number>> {
     const octokit = github.getOctokit(this.token)
 
@@ -84,16 +87,16 @@ export class GitHub {
       }
     }
     `
-    const input: CreatePullRequestInput = {
-      repositoryId: repositoryId,
-      baseRefName: baseRefName,
-      headRefName: headRefName,
-      title: title,
-      body: body
+    const _input: CreatePullRequestInput = {
+      repositoryId: input.repositoryId,
+      baseRefName: input.baseRefName,
+      headRefName: input.repositoryId,
+      title: input.title,
+      body: input.body
     }
     const {repository} = await octokit.graphql<{repository: Repository}>(
       query,
-      input
+      _input
     )
 
     const pullRequestNumber = (): Maybe<number> => {
