@@ -4,6 +4,7 @@ import {
   Commit,
   PullRequest,
   CreatePullRequestInput,
+  UpdatePullRequestInput,
   Maybe
 } from '@octokit/graphql-schema'
 
@@ -91,21 +92,12 @@ export class GitHub {
       title: title,
       body: body
     }
-    const {repository} = await octokit.graphql<{repository: Repository}>(
+    const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
       query,
       input
     )
-
-    const pullRequestNumber = (): Maybe<number> => {
-      if (repository.pullRequests.edges === undefined) return null
-      if (repository.pullRequests.edges === null) return null
-      if (repository.pullRequests.edges[0]?.node === undefined) return null
-      if (repository.pullRequests.edges[0]?.node === null) return null
-      if (repository.pullRequests.edges[0]?.node?.number === null) return null
-      return repository.pullRequests.edges[0]?.node?.number
-    }
     return new Promise(resolve => {
-      resolve(pullRequestNumber())
+      resolve(pullRequest.number)
     })
   }
 
