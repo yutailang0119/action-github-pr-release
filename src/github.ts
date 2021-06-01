@@ -10,6 +10,12 @@ import {
 
 type ExistingPullRequest = Maybe<{number: number}>
 
+type AssociatedPullRequest = {
+  number: number
+  title: string
+  author: string
+}
+
 export class GitHub {
   token: string
   owner: string
