@@ -10,7 +10,7 @@ import {
 
 type ExistingPullRequest = Maybe<{number: number}>
 
-type PullRequestItem = {
+export type PullRequestItem = {
   number: number
   title: string
   author: string
