@@ -145,7 +145,9 @@ export class GitHub {
     })
   }
 
-  async associatedPullRequest(expression: string): Promise<Maybe<PullRequest>> {
+  async associatedPullRequest(
+    expression: string
+  ): Promise<Maybe<AssociatedPullRequest>> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -185,10 +187,19 @@ export class GitHub {
     if (commit.associatedPullRequests?.edges === undefined) return null
     if (commit.associatedPullRequests?.edges === null) return null
     if (commit.associatedPullRequests?.edges[0]?.node === undefined) return null
+    if (commit.associatedPullRequests?.edges[0]?.node === null) return null
+    if (commit.associatedPullRequests?.edges[0]?.node.author === undefined)
+      return null
+    if (commit.associatedPullRequests?.edges[0]?.node.author === null)
+      return null
 
-    const pullRequest = commit.associatedPullRequests?.edges[0]?.node
+    const pr: AssociatedPullRequest = {
+      number: commit.associatedPullRequests?.edges[0]?.node.number,
+      title: commit.associatedPullRequests?.edges[0]?.node.title,
+      author: commit.associatedPullRequests?.edges[0]?.node.author.login
+    }
     return new Promise(resolve => {
-      resolve(pullRequest)
+      resolve(pr)
     })
   }
 
