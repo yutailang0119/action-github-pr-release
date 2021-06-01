@@ -10,7 +10,7 @@ import {
 
 type ExistingPullRequest = Maybe<{number: number}>
 
-type AssociatedPullRequest = {
+type PullRequestItem = {
   number: number
   title: string
   author: string
@@ -147,7 +147,7 @@ export class GitHub {
 
   async associatedPullRequest(
     expression: string
-  ): Promise<Maybe<AssociatedPullRequest>> {
+  ): Promise<Maybe<PullRequestItem>> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -193,7 +193,7 @@ export class GitHub {
     if (commit.associatedPullRequests?.edges[0]?.node.author === null)
       return null
 
-    const pr: AssociatedPullRequest = {
+    const pr: PullRequestItem = {
       number: commit.associatedPullRequests?.edges[0]?.node.number,
       title: commit.associatedPullRequests?.edges[0]?.node.title,
       author: commit.associatedPullRequests?.edges[0]?.node.author.login
