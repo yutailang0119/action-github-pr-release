@@ -223,9 +223,9 @@ export class GitHub {
           page
         })
         .then(response => {
-          response.data.commits.forEach(commit => {
+          for (const commit of response.data.commits) {
             shas.push(commit.sha)
-          })
+          }
           // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
           const next: string | undefined = ((response.headers.link || '').match(
             /<([^>]+)>;\s*rel="next"/
