@@ -8,7 +8,7 @@ import {
   Maybe
 } from '@octokit/graphql-schema'
 
-type ExistingPullRequest = {number: number}
+type ExistingPullRequest = {id: string}
 
 export type PullRequestItem = {
   number: number
@@ -42,7 +42,7 @@ export class GitHub {
             edges {
               node {
                 ... on PullRequest {
-                  number
+                  id
                 }
               }
             }
@@ -65,8 +65,8 @@ export class GitHub {
       if (repository.pullRequests.edges === null) return null
       if (repository.pullRequests.edges[0]?.node === undefined) return null
       if (repository.pullRequests.edges[0]?.node === null) return null
-      if (repository.pullRequests.edges[0]?.node?.number === null) return null
-      return {number: repository.pullRequests.edges[0]?.node?.number}
+      if (repository.pullRequests.edges[0]?.node?.id === null) return null
+      return {id: repository.pullRequests.edges[0]?.node?.id}
     }
 
     return new Promise(resolve => {

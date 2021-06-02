@@ -8,7 +8,7 @@ test('detectExistingPullRequest', async () => {
   const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
   const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
   const repositoryId = process.env.TEST_REPOSITORY_ID ?? ''
-  const pullRequestNumber = Number(process.env.TEST_PULL_REQUEST_NUMBER)
+  const pullRequestId = process.env.TEST_PULL_REQUEST_ID ?? ''
 
   const github = new GitHub(token, owner, repo)
 
@@ -18,7 +18,7 @@ test('detectExistingPullRequest', async () => {
   )
   expect(result.repositoryId).toEqual(repositoryId)
   expect(result.pullRequest).not.toBeNull()
-  expect(result.pullRequest!.number).toEqual(pullRequestNumber)
+  expect(result.pullRequest!.id).toEqual(pullRequestId)
 })
 
 test('associatedPullRequest', async () => {
