@@ -56,8 +56,8 @@ export class GitHub {
       {
         owner: this.owner,
         repo: this.repo,
-        baseRefName: baseRefName,
-        headRefName: headRefName
+        baseRefName,
+        headRefName
       }
     )
     const pullRequest = (): Maybe<ExistingPullRequest> => {
@@ -98,11 +98,11 @@ export class GitHub {
     }
     `
     const input: CreatePullRequestInput = {
-      repositoryId: repositoryId,
-      baseRefName: baseRefName,
-      headRefName: headRefName,
-      title: title,
-      body: body
+      repositoryId,
+      baseRefName,
+      headRefName,
+      title,
+      body
     }
     const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
       query,
@@ -132,9 +132,9 @@ export class GitHub {
     }
     `
     const input: UpdatePullRequestInput = {
-      pullRequestId: pullRequestId,
-      title: title,
-      body: body
+      pullRequestId,
+      title,
+      body
     }
     const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
       query,
@@ -179,7 +179,7 @@ export class GitHub {
       {
         owner: this.owner,
         repo: this.repo,
-        expression: expression
+        expression
       }
     )
     const commit = repository.object as Commit
@@ -220,7 +220,7 @@ export class GitHub {
           base: baseRefName,
           head: headRefName,
           per_page: 100,
-          page: page
+          page
         })
         .then(response => {
           response.data.commits.forEach(commit => {
