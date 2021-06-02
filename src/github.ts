@@ -8,7 +8,7 @@ import {
   Maybe
 } from '@octokit/graphql-schema'
 
-type ExistingPullRequest = Maybe<{number: number}>
+type ExistingPullRequest = {number: number}
 
 export type PullRequestItem = {
   number: number
@@ -30,7 +30,7 @@ export class GitHub {
   async detectExistingPullRequest(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequest: ExistingPullRequest}> {
+  ): Promise<{repositoryId: string; pullRequest: Maybe<ExistingPullRequest>}> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -60,7 +60,7 @@ export class GitHub {
         headRefName: headRefName
       }
     )
-    const pullRequest = (): ExistingPullRequest => {
+    const pullRequest = (): Maybe<ExistingPullRequest> => {
       if (repository.pullRequests.edges === undefined) return null
       if (repository.pullRequests.edges === null) return null
       if (repository.pullRequests.edges[0]?.node === undefined) return null
