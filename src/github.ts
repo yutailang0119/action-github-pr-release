@@ -210,7 +210,7 @@ export class GitHub {
     const octokit = github.getOctokit(this.token)
 
     let page: number | undefined = undefined
-    let shas: string[] = []
+    const shas: string[] = []
     while (!Number.isNaN(page)) {
       // https://docs.github.com/en/rest/reference/repos#compare-two-commits
       await octokit.rest.repos
