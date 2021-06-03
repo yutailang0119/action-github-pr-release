@@ -1,10 +1,16 @@
 import {PullRequestItem} from '../src/github'
 
 export class Template {
+  date: Date
   pullRequests: PullRequestItem[]
 
-  constructor(pullRequests: PullRequestItem[]) {
+  constructor(date: Date, pullRequests: PullRequestItem[]) {
+    this.date = date
     this.pullRequests = pullRequests
+  }
+
+  title(): string {
+    return `Release ${this.date}`
   }
 
   checkList(): string {
