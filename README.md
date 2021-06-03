@@ -14,6 +14,7 @@ This action's features is based on [x-motemen/git-pr-release](https://github.com
     - Production branch
     - Staging branch
 - [ ] Use template
+    - [ ] Difference update
 - [ ] Add labels
 - [ ] Replace mention
 - [ ] Support command options
