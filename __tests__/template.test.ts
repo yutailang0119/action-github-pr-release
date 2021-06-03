@@ -8,6 +8,13 @@ const pullRequests: PullRequestItem[] = [
   {number: 456, title: 'BBB', author: 'y7g'}
 ]
 
+test('title', () => {
+  const template = new Template(date, pullRequests)
+  expect(template.title()).toEqual(
+    `Release ${date}`
+  )
+})
+
 test('checkList', () => {
   const template = new Template(date, pullRequests)
   expect(template.checkList()).toEqual(
