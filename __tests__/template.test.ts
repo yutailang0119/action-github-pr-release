@@ -7,8 +7,5 @@ test('checkList', () => {
     {number: 456, title: 'BBB', author: 'y7g'}
   ]
   const result = checkList(pullRequests)
-  const list = `- #123 AAA @yutailang0119
-- #456 BBB @y7g
-`
-  expect(result).toEqual(list)
+  expect(result).toEqual(`- #123 AAA @yutailang0119\n- #456 BBB @y7g\n`)
 })
