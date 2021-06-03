@@ -1,8 +1,8 @@
 import {PullRequestItem} from '../src/github'
 
 export class Template {
-  date: Date
-  pullRequests: PullRequestItem[]
+  private date: Date
+  private pullRequests: PullRequestItem[]
 
   constructor(date: Date, pullRequests: PullRequestItem[]) {
     this.date = date
