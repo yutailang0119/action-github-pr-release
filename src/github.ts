@@ -223,8 +223,8 @@ export class GitHub {
           per_page: 100,
           page
         })
-      } catch {
-        continue
+      } catch (error) {
+        throw error
       }
 
       for (const commit of response.data.commits) {
