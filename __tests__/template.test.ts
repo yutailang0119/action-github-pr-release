@@ -1,18 +1,15 @@
-import {PullRequestItem} from '../src/github'
 import {Template} from '../src/template'
 
 const date = new Date()
 
-const pullRequests: PullRequestItem[] = [
+const pullRequests = [
   {number: 123, title: 'AAA', author: 'yutailang0119'},
   {number: 456, title: 'BBB', author: 'y7g'}
 ]
 
 test('title', () => {
   const template = new Template(date, pullRequests)
-  expect(template.title()).toEqual(
-    `Release ${date}`
-  )
+  expect(template.title()).toEqual(`Release ${date}`)
 })
 
 test('checkList', () => {
