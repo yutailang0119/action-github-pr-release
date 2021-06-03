@@ -17,9 +17,9 @@ export type PullRequestItem = {
 }
 
 export class GitHub {
-  token: string
-  owner: string
-  repo: string
+  private token: string
+  private owner: string
+  private repo: string
 
   constructor(token: string, owner: string, repo: string) {
     this.token = token
