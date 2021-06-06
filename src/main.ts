@@ -4,9 +4,9 @@ import {Template} from './template'
 
 async function run(): Promise<void> {
   try {
-    const token = core.getInput('token')
-    const owner = core.getInput('owner')
-    const name = core.getInput('name')
+    const token = core.getInput('token', {required: true})
+    const owner = core.getInput('owner', {required: true})
+    const name = core.getInput('name', {required: true})
     const productionBranch = core.getInput('production_branch')
     const stagingBranch = core.getInput('staging_branch')
 
