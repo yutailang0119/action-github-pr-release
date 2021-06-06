@@ -6,11 +6,11 @@ async function run(): Promise<void> {
   try {
     const token = core.getInput('token')
     const owner = core.getInput('owner')
-    const repo = core.getInput('repo')
+    const name = core.getInput('repo')
     const productionBranch = core.getInput('production_branch')
     const stagingBranch = core.getInput('staging_branch')
 
-    const github = new GitHub(token, owner, repo)
+    const github = new GitHub(token, owner, name)
 
     const compareSHAs = await github.compareSHAs(
       productionBranch,
