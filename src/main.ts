@@ -6,7 +6,7 @@ async function run(): Promise<void> {
   try {
     const token = core.getInput('token')
     const owner = core.getInput('owner')
-    const name = core.getInput('repo')
+    const name = core.getInput('name')
     const productionBranch = core.getInput('production_branch')
     const stagingBranch = core.getInput('staging_branch')
 
