@@ -19,12 +19,12 @@ export type PullRequestItem = {
 export class GitHub {
   private token: string
   private owner: string
-  private repo: string
+  private name: string
 
-  constructor(token: string, owner: string, repo: string) {
+  constructor(token: string, owner: string, name: string) {
     this.token = token
     this.owner = owner
-    this.repo = repo
+    this.name = name
   }
 
   async detectExistingPullRequest(
@@ -34,8 +34,8 @@ export class GitHub {
     const octokit = github.getOctokit(this.token)
 
     const query = `
-    query detectExistingReleasePullRequest($owner: String!, $repo: String!, $baseRefName: String!, $headRefName: String!) {
-      repository(owner: $owner, name: $repo) {
+    query detectExistingReleasePullRequest($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
+      repository(owner: $owner, name: $name) {
         ... on Repository {
           id
           pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
@@ -55,7 +55,7 @@ export class GitHub {
       query,
       {
         owner: this.owner,
-        repo: this.repo,
+        name: this.name,
         baseRefName,
         headRefName
       }
@@ -151,8 +151,8 @@ export class GitHub {
     const octokit = github.getOctokit(this.token)
 
     const query = `
-    query associatedPullRequest($owner: String!, $repo: String!, $expression: String!) {
-      repository(owner: $owner, name: $repo) {
+    query associatedPullRequest($owner: String!, $name: String!, $expression: String!) {
+      repository(owner: $owner, name: $name) {
         object(expression: $expression) {
           ... on Commit {
             associatedPullRequests(first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
@@ -178,7 +178,7 @@ export class GitHub {
       query,
       {
         owner: this.owner,
-        repo: this.repo,
+        name: this.name,
         expression
       }
     )
@@ -217,7 +217,7 @@ export class GitHub {
         // https://docs.github.com/en/rest/reference/repos#compare-two-commits
         response = await octokit.rest.repos.compareCommits({
           owner: this.owner,
-          repo: this.repo,
+          repo: this.name,
           base: baseRefName,
           head: headRefName,
           per_page: 100,
