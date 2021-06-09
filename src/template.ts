@@ -6,7 +6,9 @@ export class Template {
 
   constructor(date: Date, pullRequests: PullRequestItem[]) {
     this.date = date
-    this.pullRequests = pullRequests
+    this.pullRequests = Array.from(
+      new Map(pullRequests.map(pr => [pr.number, pr])).values()
+    )
   }
 
   title(): string {

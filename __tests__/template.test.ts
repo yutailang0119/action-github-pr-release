@@ -4,7 +4,8 @@ const date = new Date()
 
 const pullRequests = [
   {number: 123, title: 'AAA', author: 'yutailang0119'},
-  {number: 456, title: 'BBB', author: 'y7g'}
+  {number: 456, title: 'BBB', author: 'y7g'},
+  {number: 123, title: 'AAA', author: 'yutailang0119'},
 ]
 
 test('title', () => {
