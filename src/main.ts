@@ -9,6 +9,7 @@ async function run(): Promise<void> {
     const name = core.getInput('name', {required: true})
     const productionBranch = core.getInput('production_branch')
     const stagingBranch = core.getInput('staging_branch')
+    const isDryRun = core.getBooleanInput('dry_run')
 
     const github = new GitHub(token, owner, name)
 
@@ -26,26 +27,33 @@ async function run(): Promise<void> {
       new Date(),
       pullRequests.flatMap(pr => pr ?? [])
     )
+    const title = template.title()
+    const body = template.checkList()
 
-    const existingPullRequest = await github.detectExistingPullRequest(
-      productionBranch,
-      stagingBranch
-    )
-
-    if (existingPullRequest.pullRequest === null) {
-      await github.createPullRequest(
-        existingPullRequest.repositoryId,
-        productionBranch,
-        stagingBranch,
-        template.title(),
-        template.checkList()
-      )
+    if (isDryRun) {
+      core.info('Dry-run. Not mutating PR')
+      core.info(title)
+      core.info(body)
     } else {
-      await github.updatePullRequest(
-        existingPullRequest.pullRequest.id,
-        template.title(),
-        template.checkList()
+      const existingPullRequest = await github.detectExistingPullRequest(
+        productionBranch,
+        stagingBranch
       )
+      if (existingPullRequest.pullRequest === null) {
+        await github.createPullRequest(
+          existingPullRequest.repositoryId,
+          productionBranch,
+          stagingBranch,
+          title,
+          body
+        )
+      } else {
+        await github.updatePullRequest(
+          existingPullRequest.pullRequest.id,
+          title,
+          body
+        )
+      }
     }
   } catch (error) {
     core.setFailed(error.message)
