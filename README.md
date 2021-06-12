@@ -39,4 +39,4 @@ TBC
 
 ## License
 
-action-mackerel-api is available under the MIT license. See [the LICENSE file](./LICENSE) for more info.
+action-github-pr-release is available under the MIT license. See [the LICENSE file](./LICENSE) for more info.
