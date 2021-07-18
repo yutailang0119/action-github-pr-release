@@ -18,7 +18,7 @@ inputs:
     description: 'The branch name that the feature branches are merged into and is going to be merged into the "production" branch.'
     default: 'develop'
   dry_run:
-    description: 'Do not create/update a PR. Just prints out'
+    description: 'Do not create/update a PR. Just prints out.'
     default: false
 runs:
   using: 'node12'
