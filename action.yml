@@ -5,12 +5,8 @@ inputs:
   token:
     description: 'Token for GitHub API'
     required: true
-  onwer:
-    description: 'Repository owner name'
-    required: true
-  name:
-    description: 'Repository name'
-    required: true
+  repository:
+    description: 'The owner and repository name. For example, octocat/Hello-World.'
   production_branch:
     description: 'The branch name that is deployed in production environment.'
     default: 'main'
