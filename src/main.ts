@@ -1,26 +1,17 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
+import {getInputs} from './input'
 import {GitHub} from './github'
 import {Template} from './template'
 
 async function run(): Promise<void> {
   try {
-    const repository = core.getInput('repository') ?? github.context.repo.repo
-    const splited = repository.split('/')
-    const owner = splited[0]
-    const name = splited[1]
+    const inputs = getInputs()
+    const productionBranch = inputs.productionBranch
+    const stagingBranch = inputs.stagingBranch
 
-    const token = core.getInput('token', {required: true})
-    const productionBranch = core.getInput('production_branch')
-    const stagingBranch = core.getInput('staging_branch')
-    const isDryRun = core.getBooleanInput('dry_run')
+    const gh = new GitHub(inputs.token, inputs.owner, inputs.name)
 
-    const gh = new GitHub(token, owner, name)
-
-    const compareSHAs = await gh.compareSHAs(
-      productionBranch,
-      stagingBranch
-    )
+    const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch)
     const pullRequests = await Promise.all(
       compareSHAs.map(async sha => {
         return gh.associatedPullRequest(sha)
@@ -34,7 +25,7 @@ async function run(): Promise<void> {
     const title = template.title()
     const body = template.checkList()
 
-    if (isDryRun) {
+    if (inputs.isDryRun) {
       core.info('Dry-run. Not mutating PR')
       core.info(title)
       core.info(body)
