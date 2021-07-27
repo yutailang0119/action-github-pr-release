@@ -11,15 +11,15 @@ async function run(): Promise<void> {
     const stagingBranch = core.getInput('staging_branch')
     const isDryRun = core.getBooleanInput('dry_run')
 
-    const github = new GitHub(token, owner, name)
+    const gh = new GitHub(token, owner, name)
 
-    const compareSHAs = await github.compareSHAs(
+    const compareSHAs = await gh.compareSHAs(
       productionBranch,
       stagingBranch
     )
     const pullRequests = await Promise.all(
       compareSHAs.map(async sha => {
-        return github.associatedPullRequest(sha)
+        return gh.associatedPullRequest(sha)
       })
     )
 
@@ -35,12 +35,12 @@ async function run(): Promise<void> {
       core.info(title)
       core.info(body)
     } else {
-      const existingPullRequest = await github.detectExistingPullRequest(
+      const existingPullRequest = await gh.detectExistingPullRequest(
         productionBranch,
         stagingBranch
       )
       if (existingPullRequest.pullRequest === null) {
-        await github.createPullRequest(
+        await gh.createPullRequest(
           existingPullRequest.repositoryId,
           productionBranch,
           stagingBranch,
@@ -48,7 +48,7 @@ async function run(): Promise<void> {
           body
         )
       } else {
-        await github.updatePullRequest(
+        await gh.updatePullRequest(
           existingPullRequest.pullRequest.id,
           title,
           body
