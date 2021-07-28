@@ -10,9 +10,9 @@ test('detectExistingPullRequest', async () => {
   const repositoryId = process.env.TEST_REPOSITORY_ID
   const pullRequestId = process.env.TEST_PULL_REQUEST_ID
 
-  const github = new GitHub(token, owner, name)
+  const gh = new GitHub(token, owner, name)
 
-  const result = await github.detectExistingPullRequest(
+  const result = await gh.detectExistingPullRequest(
     productionBranch,
     stagingBranch
   )
@@ -28,9 +28,9 @@ test('associatedPullRequest', async () => {
   const commitSHA = process.env.TEST_COMMIT_SHA
   const pullRequestNumber = process.env.TEST_PULL_REQUEST_NUMBER
 
-  const github = new GitHub(token, owner, name)
+  const gh = new GitHub(token, owner, name)
 
-  const result = await github.associatedPullRequest(commitSHA)
+  const result = await gh.associatedPullRequest(commitSHA)
   expect(result!.number).toEqual(Number(pullRequestNumber))
 })
 
@@ -41,8 +41,8 @@ test('compareSHAs', async () => {
   const productionBranch = process.env.TEST_PRODUCTION_BRANCH
   const stagingBranch = process.env.TEST_STAGING_BRANCH
 
-  const github = new GitHub(token, owner, name)
+  const gh = new GitHub(token, owner, name)
 
-  const result = await github.compareSHAs(productionBranch, stagingBranch)
+  const result = await gh.compareSHAs(productionBranch, stagingBranch)
   expect(result).not.toEqual([])
 })
