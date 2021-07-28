@@ -25,8 +25,7 @@ jobs:
         npm run test
       env:
         TEST_TOKEN: ${{ secrets.GITHUB_TEST_TOKEN }}
-        TEST_REPOSITORY_OWNER: ${{ secrets.GITHUB_REPOSITORY_OWNER }}
-        TEST_REPOSITORY_NAME: ${{ secrets.GITHUB_REPOSITORY_NAME }}
+        TEST_REPOSITORY: ${{ github.repository }}
         TEST_PRODUCTION_BRANCH: ${{ secrets.GITHUB_PRODUCTION_BRANCH }}
         TEST_STAGING_BRANCH: ${{ secrets.GITHUB_STAGING_BRANCH }}
         TEST_REPOSITORY_ID: ${{ secrets.GITHUB_REPOSITORY_ID }}
