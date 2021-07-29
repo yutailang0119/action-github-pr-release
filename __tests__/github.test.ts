@@ -11,7 +11,7 @@ test('detectExistingPullRequest', async () => {
   const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
   const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
   const repositoryId = process.env.TEST_REPOSITORY_ID
-  const pullRequestId = process.env.TEST_PULL_REQUEST_ID
+  const pullRequestId = process.env.TEST_EXISTING_PULL_REQUEST_ID
 
   const gh = new GitHub(token, owner, name)
 
