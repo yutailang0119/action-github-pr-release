@@ -31,8 +31,8 @@ test('associatedPullRequest', async () => {
   const name = splited[1]
 
   const token = process.env.TEST_TOKEN ?? ''
-  const commitSHA = process.env.TEST_COMMIT_SHA ?? ''
-  const pullRequestNumber = process.env.TEST_PULL_REQUEST_NUMBER
+  const commitSHA = process.env.TEST_ASSOCIATED_COMMIT_SHA ?? ''
+  const pullRequestNumber = process.env.TEST_ASSOCIATED_PULL_REQUEST_NUMBER
 
   const gh = new GitHub(token, owner, name)
 
