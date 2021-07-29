@@ -24,7 +24,7 @@ jobs:
       run: |
         npm run test
       env:
-        TEST_TOKEN: ${{ secrets.GITHUB_TEST_TOKEN }}
+        TEST_TOKEN: ${{ github.token }}
         TEST_REPOSITORY: ${{ github.repository }}
         TEST_PRODUCTION_BRANCH: ${{ secrets.GITHUB_PRODUCTION_BRANCH }}
         TEST_STAGING_BRANCH: ${{ secrets.GITHUB_STAGING_BRANCH }}
