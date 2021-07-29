@@ -6,7 +6,8 @@ import * as path from 'path'
 test('test runs', () => {
   process.env['INPUT_TOKEN'] = process.env.TEST_TOKEN ?? ''
   process.env['INPUT_REPOSITORY'] = process.env.TEST_REPOSITORY ?? ''
-  process.env['INPUT_PRODUCTION_BRANCH'] = process.env.TEST_PRODUCTION_BRANCH ?? ''
+  process.env['INPUT_PRODUCTION_BRANCH'] =
+    process.env.TEST_PRODUCTION_BRANCH ?? ''
   process.env['INPUT_STAGING_BRANCH'] = process.env.TEST_STAGING_BRANCH ?? ''
   process.env['INPUT_DRY_RUN'] = 'true'
   const np = process.execPath
