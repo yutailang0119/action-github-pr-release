@@ -226,6 +226,50 @@ exports.GitHub = GitHub;
 
 /***/ }),
 
+/***/ 657:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getInputs = void 0;
+const core = __importStar(__nccwpck_require__(186));
+const github = __importStar(__nccwpck_require__(438));
+function getInputs() {
+    const repository = core.getInput('repository') ?? github.context.repo.repo;
+    const splited = repository.split('/');
+    const owner = splited[0];
+    const name = splited[1];
+    const token = core.getInput('token', { required: true });
+    const productionBranch = core.getInput('production_branch');
+    const stagingBranch = core.getInput('staging_branch');
+    const isDryRun = core.getBooleanInput('dry_run');
+    return { token, owner, name, productionBranch, stagingBranch, isDryRun };
+}
+exports.getInputs = getInputs;
+
+
+/***/ }),
+
 /***/ 109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -252,36 +296,34 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const input_1 = __nccwpck_require__(657);
 const github_1 = __nccwpck_require__(928);
 const template_1 = __nccwpck_require__(32);
 async function run() {
     try {
-        const token = core.getInput('token', { required: true });
-        const owner = core.getInput('owner', { required: true });
-        const name = core.getInput('name', { required: true });
-        const productionBranch = core.getInput('production_branch');
-        const stagingBranch = core.getInput('staging_branch');
-        const isDryRun = core.getBooleanInput('dry_run');
-        const github = new github_1.GitHub(token, owner, name);
-        const compareSHAs = await github.compareSHAs(productionBranch, stagingBranch);
+        const inputs = input_1.getInputs();
+        const productionBranch = inputs.productionBranch;
+        const stagingBranch = inputs.stagingBranch;
+        const gh = new github_1.GitHub(inputs.token, inputs.owner, inputs.name);
+        const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch);
         const pullRequests = await Promise.all(compareSHAs.map(async (sha) => {
-            return github.associatedPullRequest(sha);
+            return gh.associatedPullRequest(sha);
         }));
         const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr ?? []));
         const title = template.title();
         const body = template.checkList();
-        if (isDryRun) {
+        if (inputs.isDryRun) {
             core.info('Dry-run. Not mutating PR');
             core.info(title);
             core.info(body);
         }
         else {
-            const existingPullRequest = await github.detectExistingPullRequest(productionBranch, stagingBranch);
+            const existingPullRequest = await gh.detectExistingPullRequest(productionBranch, stagingBranch);
             if (existingPullRequest.pullRequest === null) {
-                await github.createPullRequest(existingPullRequest.repositoryId, productionBranch, stagingBranch, title, body);
+                await gh.createPullRequest(existingPullRequest.repositoryId, productionBranch, stagingBranch, title, body);
             }
             else {
-                await github.updatePullRequest(existingPullRequest.pullRequest.id, title, body);
+                await gh.updatePullRequest(existingPullRequest.pullRequest.id, title, body);
             }
         }
     }
