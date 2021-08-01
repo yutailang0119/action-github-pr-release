@@ -7,18 +7,28 @@ on: # rebuild any PRs and main branch changes
       - 'releases/*'
 
 jobs:
-  build: # make sure build/ci work properly
+  test_ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          npm install
-      - run: |
-          npm run all
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./
-        with:
-          milliseconds: 1000
+    - uses: actions/checkout@v2
+    - name: install
+      run: |
+        npm install
+    - name: lint
+      run: |
+        npm run lint
+    - name: build
+      run: |
+        npm run build
+    - name: test
+      run: |
+        npm run test
+      env:
+        TEST_TOKEN: ${{ github.token }}
+        TEST_REPOSITORY: ${{ github.repository }}
+        TEST_PRODUCTION_BRANCH: ${{ secrets.TEST_GITHUB_PRODUCTION_BRANCH }}
+        TEST_STAGING_BRANCH: ${{ secrets.TEST_GITHUB_STAGING_BRANCH }}
+        TEST_REPOSITORY_ID: ${{ secrets.TEST_GITHUB_REPOSITORY_ID }}
+        TEST_EXISTING_PULL_REQUEST_ID: ${{ secrets.TEST_GITHUB_EXISTING_PULL_REQUEST_ID }}
+        TEST_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_ASSOCIATED_COMMIT_SHA }}
+        TEST_ASSOCIATED_PULL_REQUEST_NUMBER: ${{ secrets.TEST_GITHUB_ASSOCIATED_PULL_REQUEST_NUMBER }}

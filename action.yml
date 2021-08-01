@@ -1,11 +1,21 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'GitHub Action to create a "release pull request"'
+description: 'Create a "release pull request" that contains features list or pull requests.'
+author: 'Yutaro Muta'
 inputs:
-  milliseconds: # change this
+  token:
+    description: 'Token for GitHub API'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  repository:
+    description: 'The owner and repository name. For example, octocat/Hello-World.'
+  production_branch:
+    description: 'The branch name that is deployed in production environment.'
+    default: 'main'
+  staging_branch:
+    description: 'The branch name that the feature branches are merged into and is going to be merged into the "production" branch.'
+    default: 'develop'
+  dry_run:
+    description: 'Do not create/update a PR. Just prints out.'
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

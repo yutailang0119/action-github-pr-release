@@ -1,16 +1,55 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import {getInputs} from './input'
+import {GitHub} from './github'
+import {Template} from './template'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    const inputs = getInputs()
+    const productionBranch = inputs.productionBranch
+    const stagingBranch = inputs.stagingBranch
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const gh = new GitHub(inputs.token, inputs.owner, inputs.name)
 
-    core.setOutput('time', new Date().toTimeString())
+    const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch)
+    const pullRequests = await Promise.all(
+      compareSHAs.map(async sha => {
+        return gh.associatedPullRequest(sha)
+      })
+    )
+
+    const template = new Template(
+      new Date(),
+      pullRequests.flatMap(pr => pr ?? [])
+    )
+    const title = template.title()
+    const body = template.checkList()
+
+    if (inputs.isDryRun) {
+      core.info('Dry-run. Not mutating PR')
+      core.info(title)
+      core.info(body)
+    } else {
+      const existingPullRequest = await gh.detectExistingPullRequest(
+        productionBranch,
+        stagingBranch
+      )
+      if (existingPullRequest.pullRequest === null) {
+        await gh.createPullRequest(
+          existingPullRequest.repositoryId,
+          productionBranch,
+          stagingBranch,
+          title,
+          body
+        )
+      } else {
+        await gh.updatePullRequest(
+          existingPullRequest.pullRequest.id,
+          title,
+          body
+        )
+      }
+    }
   } catch (error) {
     core.setFailed(error.message)
   }
