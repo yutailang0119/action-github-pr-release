@@ -65,6 +65,8 @@ class GitHub {
                 return null;
             if (repository.pullRequests.edges === null)
                 return null;
+            if (repository.pullRequests.edges.length === 0)
+                return null;
             if (repository.pullRequests.edges[0]?.node === undefined)
                 return null;
             if (repository.pullRequests.edges[0]?.node === null)
@@ -162,6 +164,8 @@ class GitHub {
         if (commit.associatedPullRequests?.edges === undefined)
             return null;
         if (commit.associatedPullRequests?.edges === null)
+            return null;
+        if (commit.associatedPullRequests?.edges.length === 0)
             return null;
         if (commit.associatedPullRequests?.edges[0]?.node === undefined)
             return null;
