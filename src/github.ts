@@ -63,6 +63,7 @@ export class GitHub {
     const pullRequest = (): Maybe<ExistingPullRequest> => {
       if (repository.pullRequests.edges === undefined) return null
       if (repository.pullRequests.edges === null) return null
+      if (repository.pullRequests.edges.length === 0) return null
       if (repository.pullRequests.edges[0]?.node === undefined) return null
       if (repository.pullRequests.edges[0]?.node === null) return null
       if (repository.pullRequests.edges[0]?.node?.id === null) return null
@@ -186,6 +187,7 @@ export class GitHub {
 
     if (commit.associatedPullRequests?.edges === undefined) return null
     if (commit.associatedPullRequests?.edges === null) return null
+    if (commit.associatedPullRequests?.edges.length === 0) return null
     if (commit.associatedPullRequests?.edges[0]?.node === undefined) return null
     if (commit.associatedPullRequests?.edges[0]?.node === null) return null
     if (commit.associatedPullRequests?.edges[0]?.node.author === undefined)
