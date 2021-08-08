@@ -24,6 +24,27 @@ test('detectExistingPullRequest', async () => {
   expect(result.pullRequest!.id).toEqual(pullRequestId)
 })
 
+test('Not Found detectExistingPullRequest', async () => {
+  const repository = process.env.TEST_REPOSITORY ?? '/'
+  const splited = repository.split('/')
+  const owner = splited[0]
+  const name = splited[1]
+
+  const token = process.env.TEST_TOKEN ?? ''
+  const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
+  const emptyBranch = process.env.TEST_EMPTY_BRANCH ?? ''
+  const repositoryId = process.env.TEST_REPOSITORY_ID
+
+  const gh = new GitHub(token, owner, name)
+
+  const result = await gh.detectExistingPullRequest(
+    productionBranch,
+    emptyBranch
+  )
+  expect(result.repositoryId).toEqual(repositoryId)
+  expect(result.pullRequest).toBeNull()
+})
+
 test('associatedPullRequest', async () => {
   const repository = process.env.TEST_REPOSITORY ?? '/'
   const splited = repository.split('/')
