@@ -64,10 +64,12 @@ export class GitHub {
       if (repository.pullRequests.edges === undefined) return null
       if (repository.pullRequests.edges === null) return null
       if (repository.pullRequests.edges.length === 0) return null
-      if (repository.pullRequests.edges[0]?.node === undefined) return null
-      if (repository.pullRequests.edges[0]?.node === null) return null
-      if (repository.pullRequests.edges[0]?.node?.id === null) return null
-      return {id: repository.pullRequests.edges[0]?.node?.id}
+      if (repository.pullRequests.edges[0] === undefined) return null
+      if (repository.pullRequests.edges[0] === null) return null
+      if (repository.pullRequests.edges[0].node === undefined) return null
+      if (repository.pullRequests.edges[0].node === null) return null
+      if (repository.pullRequests.edges[0].node.id === null) return null
+      return {id: repository.pullRequests.edges[0].node.id}
     }
 
     return new Promise(resolve => {
