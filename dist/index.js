@@ -67,13 +67,17 @@ class GitHub {
                 return null;
             if (repository.pullRequests.edges.length === 0)
                 return null;
-            if (repository.pullRequests.edges[0]?.node === undefined)
+            if (repository.pullRequests.edges[0] === undefined)
                 return null;
-            if (repository.pullRequests.edges[0]?.node === null)
+            if (repository.pullRequests.edges[0] === null)
                 return null;
-            if (repository.pullRequests.edges[0]?.node?.id === null)
+            if (repository.pullRequests.edges[0].node === undefined)
                 return null;
-            return { id: repository.pullRequests.edges[0]?.node?.id };
+            if (repository.pullRequests.edges[0].node === null)
+                return null;
+            if (repository.pullRequests.edges[0].node.id === null)
+                return null;
+            return { id: repository.pullRequests.edges[0].node.id };
         };
         return new Promise(resolve => {
             resolve({
@@ -167,18 +171,22 @@ class GitHub {
             return null;
         if (commit.associatedPullRequests?.edges.length === 0)
             return null;
-        if (commit.associatedPullRequests?.edges[0]?.node === undefined)
+        if (commit.associatedPullRequests?.edges[0] === undefined)
             return null;
-        if (commit.associatedPullRequests?.edges[0]?.node === null)
+        if (commit.associatedPullRequests?.edges[0] === null)
             return null;
-        if (commit.associatedPullRequests?.edges[0]?.node.author === undefined)
+        if (commit.associatedPullRequests?.edges[0].node === undefined)
             return null;
-        if (commit.associatedPullRequests?.edges[0]?.node.author === null)
+        if (commit.associatedPullRequests?.edges[0].node === null)
+            return null;
+        if (commit.associatedPullRequests?.edges[0].node.author === undefined)
+            return null;
+        if (commit.associatedPullRequests?.edges[0].node.author === null)
             return null;
         const pr = {
-            number: commit.associatedPullRequests?.edges[0]?.node.number,
-            title: commit.associatedPullRequests?.edges[0]?.node.title,
-            author: commit.associatedPullRequests?.edges[0]?.node.author.login
+            number: commit.associatedPullRequests?.edges[0].node.number,
+            title: commit.associatedPullRequests?.edges[0].node.title,
+            author: commit.associatedPullRequests?.edges[0].node.author.login
         };
         return new Promise(resolve => {
             resolve(pr);
