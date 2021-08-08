@@ -58,7 +58,8 @@ test('associatedPullRequest', async () => {
   const gh = new GitHub(token, owner, name)
 
   const result = await gh.associatedPullRequest(commitSHA)
-  expect(result.number).toEqual(Number(pullRequestNumber))
+  expect(result).not.toBeNull()
+  expect(result!.number).toEqual(Number(pullRequestNumber))
 })
 
 test('Not Found associatedPullRequest', async () => {
