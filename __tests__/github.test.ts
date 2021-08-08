@@ -58,7 +58,23 @@ test('associatedPullRequest', async () => {
   const gh = new GitHub(token, owner, name)
 
   const result = await gh.associatedPullRequest(commitSHA)
-  expect(result!.number).toEqual(Number(pullRequestNumber))
+  expect(result.number).toEqual(Number(pullRequestNumber))
+})
+
+test('Not Found associatedPullRequest', async () => {
+  const repository = process.env.TEST_REPOSITORY ?? '/'
+  const splited = repository.split('/')
+  const owner = splited[0]
+  const name = splited[1]
+
+  const token = process.env.TEST_TOKEN ?? ''
+  const commitSHA = process.env.TEST_NOT_ASSOCIATED_COMMIT_SHA ?? ''
+  const pullRequestNumber = process.env.TEST_ASSOCIATED_PULL_REQUEST_NUMBER
+
+  const gh = new GitHub(token, owner, name)
+
+  const result = await gh.associatedPullRequest(commitSHA)
+  expect(result).toBeNull()
 })
 
 test('compareSHAs', async () => {
