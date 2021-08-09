@@ -187,22 +187,23 @@ export class GitHub {
     )
     const commit = repository.object as Commit
 
-    if (commit.associatedPullRequests?.edges === undefined) return null
-    if (commit.associatedPullRequests?.edges === null) return null
-    if (commit.associatedPullRequests?.edges.length === 0) return null
-    if (commit.associatedPullRequests?.edges[0] === undefined) return null
-    if (commit.associatedPullRequests?.edges[0] === null) return null
-    if (commit.associatedPullRequests?.edges[0].node === undefined) return null
-    if (commit.associatedPullRequests?.edges[0].node === null) return null
-    if (commit.associatedPullRequests?.edges[0].node.author === undefined)
+    if (commit.associatedPullRequests === undefined) return null
+    if (commit.associatedPullRequests === null) return null
+    if (commit.associatedPullRequests.edges === undefined) return null
+    if (commit.associatedPullRequests.edges === null) return null
+    if (commit.associatedPullRequests.edges.length === 0) return null
+    if (commit.associatedPullRequests.edges[0] === undefined) return null
+    if (commit.associatedPullRequests.edges[0] === null) return null
+    if (commit.associatedPullRequests.edges[0].node === undefined) return null
+    if (commit.associatedPullRequests.edges[0].node === null) return null
+    if (commit.associatedPullRequests.edges[0].node.author === undefined)
       return null
-    if (commit.associatedPullRequests?.edges[0].node.author === null)
-      return null
+    if (commit.associatedPullRequests.edges[0].node.author === null) return null
 
     const pr: PullRequestItem = {
-      number: commit.associatedPullRequests?.edges[0].node.number,
-      title: commit.associatedPullRequests?.edges[0].node.title,
-      author: commit.associatedPullRequests?.edges[0].node.author.login
+      number: commit.associatedPullRequests.edges[0].node.number,
+      title: commit.associatedPullRequests.edges[0].node.title,
+      author: commit.associatedPullRequests.edges[0].node.author.login
     }
     return new Promise(resolve => {
       resolve(pr)
