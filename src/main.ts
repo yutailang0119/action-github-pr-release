@@ -35,7 +35,7 @@ async function run(): Promise<void> {
     const body = template.checkList()
 
     if (inputs.isDryRun) {
-      core.info('Dry-run. Not mutating PR')
+      core.info('Dry-run. Not mutating Pull Request.')
       core.info(title)
       core.info(body)
     } else {
