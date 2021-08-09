@@ -150,7 +150,7 @@ export class GitHub {
 
   async associatedPullRequest(
     expression: string
-  ): Promise<Maybe<PullRequestItem>> {
+  ): Promise<PullRequestItem | undefined> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -187,18 +187,18 @@ export class GitHub {
     )
     const commit = repository.object as Commit
 
-    if (commit.associatedPullRequests === undefined) return null
-    if (commit.associatedPullRequests === null) return null
-    if (commit.associatedPullRequests.edges === undefined) return null
-    if (commit.associatedPullRequests.edges === null) return null
-    if (commit.associatedPullRequests.edges.length === 0) return null
-    if (commit.associatedPullRequests.edges[0] === undefined) return null
-    if (commit.associatedPullRequests.edges[0] === null) return null
-    if (commit.associatedPullRequests.edges[0].node === undefined) return null
-    if (commit.associatedPullRequests.edges[0].node === null) return null
+    if (commit.associatedPullRequests === undefined) return undefined
+    if (commit.associatedPullRequests === null) return undefined
+    if (commit.associatedPullRequests.edges === undefined) return undefined
+    if (commit.associatedPullRequests.edges === null) return undefined
+    if (commit.associatedPullRequests.edges.length === 0) return undefined
+    if (commit.associatedPullRequests.edges[0] === undefined) return undefined
+    if (commit.associatedPullRequests.edges[0] === null) return undefined
+    if (commit.associatedPullRequests.edges[0].node === undefined) return undefined
+    if (commit.associatedPullRequests.edges[0].node === null) return undefined
     if (commit.associatedPullRequests.edges[0].node.author === undefined)
-      return null
-    if (commit.associatedPullRequests.edges[0].node.author === null) return null
+      return undefined
+    if (commit.associatedPullRequests.edges[0].node.author === null) return undefined
 
     const pr: PullRequestItem = {
       number: commit.associatedPullRequests.edges[0].node.number,
