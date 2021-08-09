@@ -198,8 +198,7 @@ export class GitHub {
     if (commit.associatedPullRequests.edges[0].node === null) return null
     if (commit.associatedPullRequests.edges[0].node.author === undefined)
       return null
-    if (commit.associatedPullRequests.edges[0].node.author === null)
-      return null
+    if (commit.associatedPullRequests.edges[0].node.author === null) return null
 
     const pr: PullRequestItem = {
       number: commit.associatedPullRequests.edges[0].node.number,
