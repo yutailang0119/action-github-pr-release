@@ -4,22 +4,26 @@ import * as github from '@actions/github'
 export type Inputs = {
   token: string
   owner: string
-  name: string
+  repo: string
   productionBranch: string
   stagingBranch: string
   isDryRun: boolean
 }
 
 export function getInputs(): Inputs {
-  const repository = core.getInput('repository') ?? github.context.repo.repo
-  const splited = repository.split('/')
-  const owner = splited[0]
-  const name = splited[1]
-
+  const {owner, repo} = repository()
   const token = core.getInput('token', {required: true})
   const productionBranch = core.getInput('production_branch')
   const stagingBranch = core.getInput('staging_branch')
   const isDryRun = core.getBooleanInput('dry_run')
 
-  return {token, owner, name, productionBranch, stagingBranch, isDryRun}
+  return {token, owner, repo, productionBranch, stagingBranch, isDryRun}
+}
+
+function repository(): {owner: string; repo: string} {
+  if (core.getInput('repository')) {
+    const [owner, repo] = core.getInput('repository').split('/')
+    return {owner, repo}
+  }
+  return github.context.repo
 }

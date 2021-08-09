@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const productionBranch = inputs.productionBranch
     const stagingBranch = inputs.stagingBranch
 
-    const gh = new GitHub(inputs.token, inputs.owner, inputs.name)
+    const gh = new GitHub(inputs.token, inputs.owner, inputs.repo)
 
     const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch)
     if (compareSHAs.length === 0) {
