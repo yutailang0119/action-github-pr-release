@@ -63,11 +63,9 @@ export class GitHub {
       if (repository.pullRequests.edges === undefined) return undefined
       if (repository.pullRequests.edges === null) return undefined
       if (repository.pullRequests.edges.length === 0) return undefined
-      if (repository.pullRequests.edges[0] === undefined) return undefined
-      if (repository.pullRequests.edges[0] === null) return undefined
-      if (repository.pullRequests.edges[0].node === undefined) return undefined
-      if (repository.pullRequests.edges[0].node === null) return undefined
-      if (repository.pullRequests.edges[0].node.id === null) return undefined
+      if (repository.pullRequests.edges[0]?.node?.id === undefined)
+        return undefined
+      if (repository.pullRequests.edges[0]?.node.id === null) return undefined
       return {id: repository.pullRequests.edges[0].node.id}
     }
 
@@ -186,17 +184,10 @@ export class GitHub {
     )
     const commit = repository.object as Commit
 
-    if (commit.associatedPullRequests === undefined) return undefined
-    if (commit.associatedPullRequests === null) return undefined
-    if (commit.associatedPullRequests.edges === undefined) return undefined
+    if (commit.associatedPullRequests?.edges === undefined) return undefined
     if (commit.associatedPullRequests.edges === null) return undefined
     if (commit.associatedPullRequests.edges.length === 0) return undefined
-    if (commit.associatedPullRequests.edges[0] === undefined) return undefined
-    if (commit.associatedPullRequests.edges[0] === null) return undefined
-    if (commit.associatedPullRequests.edges[0].node === undefined)
-      return undefined
-    if (commit.associatedPullRequests.edges[0].node === null) return undefined
-    if (commit.associatedPullRequests.edges[0].node.author === undefined)
+    if (commit.associatedPullRequests.edges[0]?.node?.author === undefined)
       return undefined
     if (commit.associatedPullRequests.edges[0].node.author === null)
       return undefined

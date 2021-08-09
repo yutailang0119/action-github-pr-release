@@ -61,21 +61,16 @@ class GitHub {
             headRefName
         });
         const pullRequest = () => {
+            var _a, _b, _c;
             if (repository.pullRequests.edges === undefined)
                 return undefined;
             if (repository.pullRequests.edges === null)
                 return undefined;
             if (repository.pullRequests.edges.length === 0)
                 return undefined;
-            if (repository.pullRequests.edges[0] === undefined)
+            if (((_b = (_a = repository.pullRequests.edges[0]) === null || _a === void 0 ? void 0 : _a.node) === null || _b === void 0 ? void 0 : _b.id) === undefined)
                 return undefined;
-            if (repository.pullRequests.edges[0] === null)
-                return undefined;
-            if (repository.pullRequests.edges[0].node === undefined)
-                return undefined;
-            if (repository.pullRequests.edges[0].node === null)
-                return undefined;
-            if (repository.pullRequests.edges[0].node.id === null)
+            if (((_c = repository.pullRequests.edges[0]) === null || _c === void 0 ? void 0 : _c.node.id) === null)
                 return undefined;
             return { id: repository.pullRequests.edges[0].node.id };
         };
@@ -135,6 +130,7 @@ class GitHub {
         });
     }
     async associatedPullRequest(expression) {
+        var _a, _b, _c;
         const octokit = github.getOctokit(this.token);
         const query = `
     query associatedPullRequest($owner: String!, $name: String!, $expression: String!) {
@@ -165,25 +161,13 @@ class GitHub {
             expression
         });
         const commit = repository.object;
-        if (commit.associatedPullRequests === undefined)
-            return undefined;
-        if (commit.associatedPullRequests === null)
-            return undefined;
-        if (commit.associatedPullRequests.edges === undefined)
+        if (((_a = commit.associatedPullRequests) === null || _a === void 0 ? void 0 : _a.edges) === undefined)
             return undefined;
         if (commit.associatedPullRequests.edges === null)
             return undefined;
         if (commit.associatedPullRequests.edges.length === 0)
             return undefined;
-        if (commit.associatedPullRequests.edges[0] === undefined)
-            return undefined;
-        if (commit.associatedPullRequests.edges[0] === null)
-            return undefined;
-        if (commit.associatedPullRequests.edges[0].node === undefined)
-            return undefined;
-        if (commit.associatedPullRequests.edges[0].node === null)
-            return undefined;
-        if (commit.associatedPullRequests.edges[0].node.author === undefined)
+        if (((_c = (_b = commit.associatedPullRequests.edges[0]) === null || _b === void 0 ? void 0 : _b.node) === null || _c === void 0 ? void 0 : _c.author) === undefined)
             return undefined;
         if (commit.associatedPullRequests.edges[0].node.author === null)
             return undefined;
@@ -271,7 +255,8 @@ exports.getInputs = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const github = __importStar(__nccwpck_require__(438));
 function getInputs() {
-    const repository = core.getInput('repository') ?? github.context.repo.repo;
+    var _a;
+    const repository = (_a = core.getInput('repository')) !== null && _a !== void 0 ? _a : github.context.repo.repo;
     const splited = repository.split('/');
     const owner = splited[0];
     const name = splited[1];
@@ -333,7 +318,7 @@ async function run() {
             core.info("There isn't associated Pull Requests.");
             return;
         }
-        const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr ?? []));
+        const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []));
         const title = template.title();
         const body = template.checkList();
         if (inputs.isDryRun) {
