@@ -4,8 +4,7 @@ import {
   Commit,
   PullRequest,
   CreatePullRequestInput,
-  UpdatePullRequestInput,
-  Maybe
+  UpdatePullRequestInput
 } from '@octokit/graphql-schema'
 
 type ExistingPullRequest = {id: string}
