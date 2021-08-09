@@ -255,18 +255,21 @@ exports.getInputs = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const github = __importStar(__nccwpck_require__(438));
 function getInputs() {
-    var _a;
-    const repository = (_a = core.getInput('repository')) !== null && _a !== void 0 ? _a : github.context.repo.repo;
-    const splited = repository.split('/');
-    const owner = splited[0];
-    const name = splited[1];
+    const { owner, repo } = repository();
     const token = core.getInput('token', { required: true });
     const productionBranch = core.getInput('production_branch');
     const stagingBranch = core.getInput('staging_branch');
     const isDryRun = core.getBooleanInput('dry_run');
-    return { token, owner, name, productionBranch, stagingBranch, isDryRun };
+    return { token, owner, repo, productionBranch, stagingBranch, isDryRun };
 }
 exports.getInputs = getInputs;
+function repository() {
+    if (core.getInput('repository')) {
+        const [owner, repo] = core.getInput('repository').split('/');
+        return { owner, repo };
+    }
+    return github.context.repo;
+}
 
 
 /***/ }),
@@ -305,7 +308,7 @@ async function run() {
         const inputs = input_1.getInputs();
         const productionBranch = inputs.productionBranch;
         const stagingBranch = inputs.stagingBranch;
-        const gh = new github_1.GitHub(inputs.token, inputs.owner, inputs.name);
+        const gh = new github_1.GitHub(inputs.token, inputs.owner, inputs.repo);
         const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch);
         if (compareSHAs.length === 0) {
             core.info("There isn't anything to compare.");
