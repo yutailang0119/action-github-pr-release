@@ -63,7 +63,8 @@ export class GitHub {
       if (repository.pullRequests.edges === undefined) return undefined
       if (repository.pullRequests.edges === null) return undefined
       if (repository.pullRequests.edges.length === 0) return undefined
-      if (repository.pullRequests.edges[0]?.node?.id === undefined) return undefined
+      if (repository.pullRequests.edges[0]?.node?.id === undefined)
+        return undefined
       if (repository.pullRequests.edges[0]?.node.id === null) return undefined
       return {id: repository.pullRequests.edges[0].node.id}
     }
