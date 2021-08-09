@@ -43,7 +43,7 @@ async function run(): Promise<void> {
         productionBranch,
         stagingBranch
       )
-      if (existingPullRequest.pullRequest === null) {
+      if (existingPullRequest.pullRequest === undefined) {
         await gh.createPullRequest(
           existingPullRequest.repositoryId,
           productionBranch,

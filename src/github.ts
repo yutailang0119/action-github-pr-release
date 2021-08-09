@@ -30,7 +30,7 @@ export class GitHub {
   async detectExistingPullRequest(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequest: Maybe<ExistingPullRequest>}> {
+  ): Promise<{repositoryId: string; pullRequest?: ExistingPullRequest}> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -60,15 +60,15 @@ export class GitHub {
         headRefName
       }
     )
-    const pullRequest = (): Maybe<ExistingPullRequest> => {
-      if (repository.pullRequests.edges === undefined) return null
-      if (repository.pullRequests.edges === null) return null
-      if (repository.pullRequests.edges.length === 0) return null
-      if (repository.pullRequests.edges[0] === undefined) return null
-      if (repository.pullRequests.edges[0] === null) return null
-      if (repository.pullRequests.edges[0].node === undefined) return null
-      if (repository.pullRequests.edges[0].node === null) return null
-      if (repository.pullRequests.edges[0].node.id === null) return null
+    const pullRequest = (): ExistingPullRequest | undefined => {
+      if (repository.pullRequests.edges === undefined) return undefined
+      if (repository.pullRequests.edges === null) return undefined
+      if (repository.pullRequests.edges.length === 0) return undefined
+      if (repository.pullRequests.edges[0] === undefined) return undefined
+      if (repository.pullRequests.edges[0] === null) return undefined
+      if (repository.pullRequests.edges[0].node === undefined) return undefined
+      if (repository.pullRequests.edges[0].node === null) return undefined
+      if (repository.pullRequests.edges[0].node.id === null) return undefined
       return {id: repository.pullRequests.edges[0].node.id}
     }
 
