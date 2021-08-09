@@ -20,7 +20,7 @@ test('detectExistingPullRequest', async () => {
     stagingBranch
   )
   expect(result.repositoryId).toEqual(repositoryId)
-  expect(result.pullRequest).not.toBeNull()
+  expect(result.pullRequest).not.toBeUndefined()
   expect(result.pullRequest!.id).toEqual(pullRequestId)
 })
 
@@ -42,7 +42,7 @@ test('Not Found detectExistingPullRequest', async () => {
     emptyBranch
   )
   expect(result.repositoryId).toEqual(repositoryId)
-  expect(result.pullRequest).toBeNull()
+  expect(result.pullRequest).toBeUndefined()
 })
 
 test('associatedPullRequest', async () => {
@@ -58,7 +58,7 @@ test('associatedPullRequest', async () => {
   const gh = new GitHub(token, owner, name)
 
   const result = await gh.associatedPullRequest(commitSHA)
-  expect(result).not.toBeNull()
+  expect(result).not.toBeUndefined()
   expect(result!.number).toEqual(Number(pullRequestNumber))
 })
 
@@ -75,7 +75,7 @@ test('Not Found associatedPullRequest', async () => {
   const gh = new GitHub(token, owner, name)
 
   const result = await gh.associatedPullRequest(commitSHA)
-  expect(result).toBeNull()
+  expect(result).toBeUndefined()
 })
 
 test('compareSHAs', async () => {

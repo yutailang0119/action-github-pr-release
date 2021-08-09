@@ -62,21 +62,21 @@ class GitHub {
         });
         const pullRequest = () => {
             if (repository.pullRequests.edges === undefined)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges === null)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges.length === 0)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges[0] === undefined)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges[0] === null)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges[0].node === undefined)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges[0].node === null)
-                return null;
+                return undefined;
             if (repository.pullRequests.edges[0].node.id === null)
-                return null;
+                return undefined;
             return { id: repository.pullRequests.edges[0].node.id };
         };
         return new Promise(resolve => {
@@ -166,27 +166,27 @@ class GitHub {
         });
         const commit = repository.object;
         if (commit.associatedPullRequests === undefined)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests === null)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges === undefined)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges === null)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges.length === 0)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges[0] === undefined)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges[0] === null)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges[0].node === undefined)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges[0].node === null)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges[0].node.author === undefined)
-            return null;
+            return undefined;
         if (commit.associatedPullRequests.edges[0].node.author === null)
-            return null;
+            return undefined;
         const pr = {
             number: commit.associatedPullRequests.edges[0].node.number,
             title: commit.associatedPullRequests.edges[0].node.title,
@@ -343,7 +343,7 @@ async function run() {
         }
         else {
             const existingPullRequest = await gh.detectExistingPullRequest(productionBranch, stagingBranch);
-            if (existingPullRequest.pullRequest === null) {
+            if (existingPullRequest.pullRequest === undefined) {
                 await gh.createPullRequest(existingPullRequest.repositoryId, productionBranch, stagingBranch, title, body);
             }
             else {

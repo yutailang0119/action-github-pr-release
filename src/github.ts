@@ -4,8 +4,7 @@ import {
   Commit,
   PullRequest,
   CreatePullRequestInput,
-  UpdatePullRequestInput,
-  Maybe
+  UpdatePullRequestInput
 } from '@octokit/graphql-schema'
 
 type ExistingPullRequest = {id: string}
@@ -30,7 +29,7 @@ export class GitHub {
   async detectExistingPullRequest(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequest: Maybe<ExistingPullRequest>}> {
+  ): Promise<{repositoryId: string; pullRequest?: ExistingPullRequest}> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -60,15 +59,15 @@ export class GitHub {
         headRefName
       }
     )
-    const pullRequest = (): Maybe<ExistingPullRequest> => {
-      if (repository.pullRequests.edges === undefined) return null
-      if (repository.pullRequests.edges === null) return null
-      if (repository.pullRequests.edges.length === 0) return null
-      if (repository.pullRequests.edges[0] === undefined) return null
-      if (repository.pullRequests.edges[0] === null) return null
-      if (repository.pullRequests.edges[0].node === undefined) return null
-      if (repository.pullRequests.edges[0].node === null) return null
-      if (repository.pullRequests.edges[0].node.id === null) return null
+    const pullRequest = (): ExistingPullRequest | undefined => {
+      if (repository.pullRequests.edges === undefined) return undefined
+      if (repository.pullRequests.edges === null) return undefined
+      if (repository.pullRequests.edges.length === 0) return undefined
+      if (repository.pullRequests.edges[0] === undefined) return undefined
+      if (repository.pullRequests.edges[0] === null) return undefined
+      if (repository.pullRequests.edges[0].node === undefined) return undefined
+      if (repository.pullRequests.edges[0].node === null) return undefined
+      if (repository.pullRequests.edges[0].node.id === null) return undefined
       return {id: repository.pullRequests.edges[0].node.id}
     }
 
@@ -86,7 +85,7 @@ export class GitHub {
     headRefName: string,
     title: string,
     body: string
-  ): Promise<Maybe<number>> {
+  ): Promise<number> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -120,7 +119,7 @@ export class GitHub {
     pullRequestId: string,
     title: string,
     body: string
-  ): Promise<Maybe<number>> {
+  ): Promise<number> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -150,7 +149,7 @@ export class GitHub {
 
   async associatedPullRequest(
     expression: string
-  ): Promise<Maybe<PullRequestItem>> {
+  ): Promise<PullRequestItem | undefined> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
@@ -187,18 +186,20 @@ export class GitHub {
     )
     const commit = repository.object as Commit
 
-    if (commit.associatedPullRequests === undefined) return null
-    if (commit.associatedPullRequests === null) return null
-    if (commit.associatedPullRequests.edges === undefined) return null
-    if (commit.associatedPullRequests.edges === null) return null
-    if (commit.associatedPullRequests.edges.length === 0) return null
-    if (commit.associatedPullRequests.edges[0] === undefined) return null
-    if (commit.associatedPullRequests.edges[0] === null) return null
-    if (commit.associatedPullRequests.edges[0].node === undefined) return null
-    if (commit.associatedPullRequests.edges[0].node === null) return null
+    if (commit.associatedPullRequests === undefined) return undefined
+    if (commit.associatedPullRequests === null) return undefined
+    if (commit.associatedPullRequests.edges === undefined) return undefined
+    if (commit.associatedPullRequests.edges === null) return undefined
+    if (commit.associatedPullRequests.edges.length === 0) return undefined
+    if (commit.associatedPullRequests.edges[0] === undefined) return undefined
+    if (commit.associatedPullRequests.edges[0] === null) return undefined
+    if (commit.associatedPullRequests.edges[0].node === undefined)
+      return undefined
+    if (commit.associatedPullRequests.edges[0].node === null) return undefined
     if (commit.associatedPullRequests.edges[0].node.author === undefined)
-      return null
-    if (commit.associatedPullRequests.edges[0].node.author === null) return null
+      return undefined
+    if (commit.associatedPullRequests.edges[0].node.author === null)
+      return undefined
 
     const pr: PullRequestItem = {
       number: commit.associatedPullRequests.edges[0].node.number,
