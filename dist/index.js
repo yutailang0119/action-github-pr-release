@@ -318,14 +318,22 @@ async function run() {
         const stagingBranch = inputs.stagingBranch;
         const gh = new github_1.GitHub(inputs.token, inputs.owner, inputs.name);
         const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch);
+        if (compareSHAs.length === 0) {
+            core.info("There isn't anything to compare.");
+            return;
+        }
         const pullRequests = await Promise.all(compareSHAs.map(async (sha) => {
             return gh.associatedPullRequest(sha);
         }));
+        if (pullRequests.length === 0) {
+            core.info("There isn't associated Pull Requests.");
+            return;
+        }
         const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr ?? []));
         const title = template.title();
         const body = template.checkList();
         if (inputs.isDryRun) {
-            core.info('Dry-run. Not mutating PR');
+            core.info('Dry-run. Not mutating Pull Request.');
             core.info(title);
             core.info(body);
         }
