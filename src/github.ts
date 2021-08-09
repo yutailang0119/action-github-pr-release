@@ -120,7 +120,7 @@ export class GitHub {
     pullRequestId: string,
     title: string,
     body: string
-  ): Promise<Maybe<number>> {
+  ): Promise<number> {
     const octokit = github.getOctokit(this.token)
 
     const query = `
