@@ -12,11 +12,20 @@ async function run(): Promise<void> {
     const gh = new GitHub(inputs.token, inputs.owner, inputs.name)
 
     const compareSHAs = await gh.compareSHAs(productionBranch, stagingBranch)
+    if (compareSHAs.length === 0) {
+      core.info("There isn't anything to compare.")
+      return
+    }
+
     const pullRequests = await Promise.all(
       compareSHAs.map(async sha => {
         return gh.associatedPullRequest(sha)
       })
     )
+    if (pullRequests.length === 0) {
+      core.info("There isn't associated Pull Requests.")
+      return
+    }
 
     const template = new Template(
       new Date(),
@@ -26,7 +35,7 @@ async function run(): Promise<void> {
     const body = template.checkList()
 
     if (inputs.isDryRun) {
-      core.info('Dry-run. Not mutating PR')
+      core.info('Dry-run. Not mutating Pull Request.')
       core.info(title)
       core.info(body)
     } else {
