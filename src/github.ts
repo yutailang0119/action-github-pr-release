@@ -193,11 +193,13 @@ export class GitHub {
     if (commit.associatedPullRequests.edges.length === 0) return undefined
     if (commit.associatedPullRequests.edges[0] === undefined) return undefined
     if (commit.associatedPullRequests.edges[0] === null) return undefined
-    if (commit.associatedPullRequests.edges[0].node === undefined) return undefined
+    if (commit.associatedPullRequests.edges[0].node === undefined)
+      return undefined
     if (commit.associatedPullRequests.edges[0].node === null) return undefined
     if (commit.associatedPullRequests.edges[0].node.author === undefined)
       return undefined
-    if (commit.associatedPullRequests.edges[0].node.author === null) return undefined
+    if (commit.associatedPullRequests.edges[0].node.author === null)
+      return undefined
 
     const pr: PullRequestItem = {
       number: commit.associatedPullRequests.edges[0].node.number,
