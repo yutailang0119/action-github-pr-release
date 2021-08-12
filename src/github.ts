@@ -89,7 +89,8 @@ export class GitHub {
     repositoryId: string,
     baseRefName: string,
     headRefName: string,
-    template: Template
+    template: Template,
+    draft: boolean
   ): Promise<void> {
     const octokit = github.getOctokit(this.token)
 
@@ -98,7 +99,8 @@ export class GitHub {
       baseRefName,
       headRefName,
       title: template.title(),
-      body: template.body()
+      body: template.body(),
+      draft
     }
     await octokit.graphql({
       query: query.createPullRequest,

@@ -43,7 +43,8 @@ async function run(): Promise<void> {
           repository.id,
           productionBranch,
           stagingBranch,
-          template
+          template,
+          inputs.isDraft
         )
       } else {
         await gh.updatePullRequest(repository.pullRequest.id, template)
