@@ -9,6 +9,7 @@ test('test runs', () => {
     process.env.TEST_PRODUCTION_BRANCH ?? ''
   process.env['INPUT_STAGING_BRANCH'] = process.env.TEST_STAGING_BRANCH ?? ''
   process.env['INPUT_DRY_RUN'] = 'true'
+  process.env['INPUT_DRAFT'] = 'true'
   const np = process.execPath
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   const options: cp.ExecFileSyncOptions = {
