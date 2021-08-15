@@ -106,7 +106,9 @@ export class GitHub {
     }
     const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
       query,
-      input
+      {
+        input
+      }
     )
     return new Promise(resolve => {
       resolve(pullRequest.number)
@@ -138,7 +140,9 @@ export class GitHub {
     }
     const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
       query,
-      input
+      {
+        input
+      }
     )
     return new Promise(resolve => {
       resolve(pullRequest.number)
