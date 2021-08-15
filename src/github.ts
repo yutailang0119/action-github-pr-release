@@ -111,8 +111,10 @@ export class GitHub {
       input
     })
 
-    if (payload.pullRequest === undefined) throw Error(`Cannot read property 'pullRequest' of undefined`)
-    if (payload.pullRequest === null) throw Error(`Cannot read property 'pullRequest' of null`)
+    if (payload.pullRequest === undefined)
+      throw Error(`Cannot read property 'pullRequest' of undefined`)
+    if (payload.pullRequest === null)
+      throw Error(`Cannot read property 'pullRequest' of null`)
     const pullRequestNumber = payload.pullRequest.number
 
     return new Promise(resolve => {
@@ -149,8 +151,10 @@ export class GitHub {
       input
     })
 
-    if (payload.pullRequest === undefined) throw Error(`Cannot read property 'pullRequest' of undefined`)
-    if (payload.pullRequest === null) throw Error(`Cannot read property 'pullRequest' of null`)
+    if (payload.pullRequest === undefined)
+      throw Error(`Cannot read property 'pullRequest' of undefined`)
+    if (payload.pullRequest === null)
+      throw Error(`Cannot read property 'pullRequest' of null`)
     const pullRequestNumber = payload.pullRequest.number
 
     return new Promise(resolve => {
