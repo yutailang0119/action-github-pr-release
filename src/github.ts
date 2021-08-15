@@ -2,7 +2,6 @@ import * as github from '@actions/github'
 import {
   Repository,
   Commit,
-  PullRequest,
   CreatePullRequestInput,
   CreatePullRequestPayload,
   UpdatePullRequestInput,
