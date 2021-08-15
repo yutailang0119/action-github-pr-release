@@ -2,9 +2,10 @@ import * as github from '@actions/github'
 import {
   Repository,
   Commit,
-  PullRequest,
   CreatePullRequestInput,
-  UpdatePullRequestInput
+  CreatePullRequestPayload,
+  UpdatePullRequestInput,
+  UpdatePullRequestPayload
 } from '@octokit/graphql-schema'
 
 type ExistingPullRequest = {id: string}
@@ -104,14 +105,20 @@ export class GitHub {
       title,
       body
     }
-    const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
-      query,
-      {
-        input
-      }
-    )
+    const {payload} = await octokit.graphql<{
+      payload: CreatePullRequestPayload
+    }>(query, {
+      input
+    })
+
+    if (payload.pullRequest === undefined)
+      throw Error(`Cannot read property 'pullRequest' of undefined`)
+    if (payload.pullRequest === null)
+      throw Error(`Cannot read property 'pullRequest' of null`)
+    const pullRequestNumber = payload.pullRequest.number
+
     return new Promise(resolve => {
-      resolve(pullRequest.number)
+      resolve(pullRequestNumber)
     })
   }
 
@@ -138,14 +145,20 @@ export class GitHub {
       title,
       body
     }
-    const {pullRequest} = await octokit.graphql<{pullRequest: PullRequest}>(
-      query,
-      {
-        input
-      }
-    )
+    const {payload} = await octokit.graphql<{
+      payload: UpdatePullRequestPayload
+    }>(query, {
+      input
+    })
+
+    if (payload.pullRequest === undefined)
+      throw Error(`Cannot read property 'pullRequest' of undefined`)
+    if (payload.pullRequest === null)
+      throw Error(`Cannot read property 'pullRequest' of null`)
+    const pullRequestNumber = payload.pullRequest.number
+
     return new Promise(resolve => {
-      resolve(pullRequest.number)
+      resolve(pullRequestNumber)
     })
   }
 

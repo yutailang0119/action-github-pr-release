@@ -101,11 +101,16 @@ class GitHub {
             title,
             body
         };
-        const { pullRequest } = await octokit.graphql(query, {
+        const { payload } = await octokit.graphql(query, {
             input
         });
+        if (payload.pullRequest === undefined)
+            throw Error(`Cannot read property 'pullRequest' of undefined`);
+        if (payload.pullRequest === null)
+            throw Error(`Cannot read property 'pullRequest' of null`);
+        const pullRequestNumber = payload.pullRequest.number;
         return new Promise(resolve => {
-            resolve(pullRequest.number);
+            resolve(pullRequestNumber);
         });
     }
     async updatePullRequest(pullRequestId, title, body) {
@@ -126,11 +131,16 @@ class GitHub {
             title,
             body
         };
-        const { pullRequest } = await octokit.graphql(query, {
+        const { payload } = await octokit.graphql(query, {
             input
         });
+        if (payload.pullRequest === undefined)
+            throw Error(`Cannot read property 'pullRequest' of undefined`);
+        if (payload.pullRequest === null)
+            throw Error(`Cannot read property 'pullRequest' of null`);
+        const pullRequestNumber = payload.pullRequest.number;
         return new Promise(resolve => {
-            resolve(pullRequest.number);
+            resolve(pullRequestNumber);
         });
     }
     async associatedPullRequest(expression) {
