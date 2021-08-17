@@ -51,15 +51,13 @@ export class GitHub {
       }
     }
     `
-    const {repository} = await octokit.graphql<{repository: Repository}>(
+    const {repository} = await octokit.graphql<{repository: Repository}>({
       query,
-      {
-        owner: this.owner,
-        name: this.name,
-        baseRefName,
-        headRefName
-      }
-    )
+      owner: this.owner,
+      name: this.name,
+      baseRefName,
+      headRefName
+    })
     const pullRequest = (): ExistingPullRequest | undefined => {
       if (repository.pullRequests.edges === undefined) return undefined
       if (repository.pullRequests.edges === null) return undefined
@@ -107,7 +105,8 @@ export class GitHub {
     }
     const {payload} = await octokit.graphql<{
       payload: CreatePullRequestPayload
-    }>(query, {
+    }>({
+      query,
       input
     })
 
@@ -147,7 +146,8 @@ export class GitHub {
     }
     const {payload} = await octokit.graphql<{
       payload: UpdatePullRequestPayload
-    }>(query, {
+    }>({
+      query,
       input
     })
 
@@ -191,14 +191,12 @@ export class GitHub {
     }    
     `
 
-    const {repository} = await octokit.graphql<{repository: Repository}>(
+    const {repository} = await octokit.graphql<{repository: Repository}>({
       query,
-      {
-        owner: this.owner,
-        name: this.name,
-        expression
-      }
-    )
+      owner: this.owner,
+      name: this.name,
+      expression
+    })
     const commit = repository.object as Commit
 
     if (commit.associatedPullRequests?.edges === undefined) return undefined
