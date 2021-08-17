@@ -54,7 +54,8 @@ class GitHub {
       }
     }
     `;
-        const { repository } = await octokit.graphql(query, {
+        const { repository } = await octokit.graphql({
+            query,
             owner: this.owner,
             name: this.name,
             baseRefName,
@@ -101,7 +102,8 @@ class GitHub {
             title,
             body
         };
-        const { payload } = await octokit.graphql(query, {
+        const { payload } = await octokit.graphql({
+            query,
             input
         });
         if (payload.pullRequest === undefined)
@@ -131,7 +133,8 @@ class GitHub {
             title,
             body
         };
-        const { payload } = await octokit.graphql(query, {
+        const { payload } = await octokit.graphql({
+            query,
             input
         });
         if (payload.pullRequest === undefined)
@@ -169,7 +172,8 @@ class GitHub {
       }
     }    
     `;
-        const { repository } = await octokit.graphql(query, {
+        const { repository } = await octokit.graphql({
+            query,
             owner: this.owner,
             name: this.name,
             expression
