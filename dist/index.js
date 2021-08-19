@@ -37,7 +37,7 @@ class GitHub {
     async detectExistingPullRequest(baseRefName, headRefName) {
         const octokit = github.getOctokit(this.token);
         const query = `
-    query detectExistingReleasePullRequest($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
+    query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
       repository(owner: $owner, name: $name) {
         ... on Repository {
           id
@@ -85,7 +85,7 @@ class GitHub {
     async createPullRequest(repositoryId, baseRefName, headRefName, title, body) {
         const octokit = github.getOctokit(this.token);
         const query = `
-    mutation createPullRequest($input: CreatePullRequestInput!) {
+    mutation ($input: CreatePullRequestInput!) {
       createPullRequest(input: $input) {
         pullRequest {
           ... on PullRequest {
@@ -118,7 +118,7 @@ class GitHub {
     async updatePullRequest(pullRequestId, title, body) {
         const octokit = github.getOctokit(this.token);
         const query = `
-    mutation updatePullRequest($input: UpdatePullRequestInput!) {
+    mutation ($input: UpdatePullRequestInput!) {
       updatePullRequest(input: $input) {
         pullRequest {
           ... on PullRequest {
@@ -150,7 +150,7 @@ class GitHub {
         var _a, _b, _c;
         const octokit = github.getOctokit(this.token);
         const query = `
-    query associatedPullRequest($owner: String!, $name: String!, $expression: String!) {
+    query ($owner: String!, $name: String!, $expression: String!) {
       repository(owner: $owner, name: $name) {
         object(expression: $expression) {
           ... on Commit {
@@ -170,7 +170,7 @@ class GitHub {
           }
         }
       }
-    }    
+    }      
     `;
         const { repository } = await octokit.graphql({
             query,
