@@ -7,6 +7,7 @@ import {
   UpdatePullRequestInput,
   UpdatePullRequestPayload
 } from '@octokit/graphql-schema'
+import * as query from './query'
 
 type ExistingPullRequest = {id: string}
 
@@ -33,26 +34,8 @@ export class GitHub {
   ): Promise<{repositoryId: string; pullRequest?: ExistingPullRequest}> {
     const octokit = github.getOctokit(this.token)
 
-    const query = `
-    query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
-      repository(owner: $owner, name: $name) {
-        ... on Repository {
-          id
-          pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
-            edges {
-              node {
-                ... on PullRequest {
-                  id
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    `
     const {repository} = await octokit.graphql<{repository: Repository}>({
-      query,
+      query: query.detectExistingPullRequest,
       owner: this.owner,
       name: this.name,
       baseRefName,
@@ -85,17 +68,6 @@ export class GitHub {
   ): Promise<number> {
     const octokit = github.getOctokit(this.token)
 
-    const query = `
-    mutation ($input: CreatePullRequestInput!) {
-      createPullRequest(input: $input) {
-        pullRequest {
-          ... on PullRequest {
-            number
-          }
-        }
-      }
-    }
-    `
     const input: CreatePullRequestInput = {
       repositoryId,
       baseRefName,
@@ -106,7 +78,7 @@ export class GitHub {
     const {payload} = await octokit.graphql<{
       payload: CreatePullRequestPayload
     }>({
-      query,
+      query: query.createPullRequest,
       input
     })
 
@@ -128,17 +100,6 @@ export class GitHub {
   ): Promise<number> {
     const octokit = github.getOctokit(this.token)
 
-    const query = `
-    mutation ($input: UpdatePullRequestInput!) {
-      updatePullRequest(input: $input) {
-        pullRequest {
-          ... on PullRequest {
-            number
-          }
-        }
-      }
-    }
-    `
     const input: UpdatePullRequestInput = {
       pullRequestId,
       title,
@@ -147,7 +108,7 @@ export class GitHub {
     const {payload} = await octokit.graphql<{
       payload: UpdatePullRequestPayload
     }>({
-      query,
+      query: query.updatePullRequest,
       input
     })
 
@@ -167,32 +128,8 @@ export class GitHub {
   ): Promise<PullRequestItem | undefined> {
     const octokit = github.getOctokit(this.token)
 
-    const query = `
-    query ($owner: String!, $name: String!, $expression: String!) {
-      repository(owner: $owner, name: $name) {
-        object(expression: $expression) {
-          ... on Commit {
-            associatedPullRequests(first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
-              edges {
-                node {
-                  ... on PullRequest {
-                    title
-                    number
-                    author {
-                      login
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }      
-    `
-
     const {repository} = await octokit.graphql<{repository: Repository}>({
-      query,
+      query: query.associatedPullRequest,
       owner: this.owner,
       name: this.name,
       expression
