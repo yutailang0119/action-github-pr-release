@@ -28,6 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GitHub = void 0;
 const github = __importStar(__nccwpck_require__(438));
+const query = __importStar(__nccwpck_require__(964));
 class GitHub {
     constructor(token, owner, name) {
         this.token = token;
@@ -36,26 +37,8 @@ class GitHub {
     }
     async detectExistingPullRequest(baseRefName, headRefName) {
         const octokit = github.getOctokit(this.token);
-        const query = `
-    query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
-      repository(owner: $owner, name: $name) {
-        ... on Repository {
-          id
-          pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
-            edges {
-              node {
-                ... on PullRequest {
-                  id
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    `;
         const { repository } = await octokit.graphql({
-            query,
+            query: query.detectExistingPullRequest,
             owner: this.owner,
             name: this.name,
             baseRefName,
@@ -84,17 +67,6 @@ class GitHub {
     }
     async createPullRequest(repositoryId, baseRefName, headRefName, title, body) {
         const octokit = github.getOctokit(this.token);
-        const query = `
-    mutation ($input: CreatePullRequestInput!) {
-      createPullRequest(input: $input) {
-        pullRequest {
-          ... on PullRequest {
-            number
-          }
-        }
-      }
-    }
-    `;
         const input = {
             repositoryId,
             baseRefName,
@@ -103,7 +75,7 @@ class GitHub {
             body
         };
         const { payload } = await octokit.graphql({
-            query,
+            query: query.createPullRequest,
             input
         });
         if (payload.pullRequest === undefined)
@@ -117,24 +89,13 @@ class GitHub {
     }
     async updatePullRequest(pullRequestId, title, body) {
         const octokit = github.getOctokit(this.token);
-        const query = `
-    mutation ($input: UpdatePullRequestInput!) {
-      updatePullRequest(input: $input) {
-        pullRequest {
-          ... on PullRequest {
-            number
-          }
-        }
-      }
-    }
-    `;
         const input = {
             pullRequestId,
             title,
             body
         };
         const { payload } = await octokit.graphql({
-            query,
+            query: query.updatePullRequest,
             input
         });
         if (payload.pullRequest === undefined)
@@ -149,31 +110,8 @@ class GitHub {
     async associatedPullRequest(expression) {
         var _a, _b, _c;
         const octokit = github.getOctokit(this.token);
-        const query = `
-    query ($owner: String!, $name: String!, $expression: String!) {
-      repository(owner: $owner, name: $name) {
-        object(expression: $expression) {
-          ... on Commit {
-            associatedPullRequests(first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
-              edges {
-                node {
-                  ... on PullRequest {
-                    title
-                    number
-                    author {
-                      login
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }      
-    `;
         const { repository } = await octokit.graphql({
-            query,
+            query: query.associatedPullRequest,
             owner: this.owner,
             name: this.name,
             expression
@@ -362,6 +300,80 @@ async function run() {
     }
 }
 run();
+
+
+/***/ }),
+
+/***/ 964:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.updatePullRequest = exports.createPullRequest = exports.associatedPullRequest = exports.detectExistingPullRequest = void 0;
+exports.detectExistingPullRequest = `
+query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
+  repository(owner: $owner, name: $name) {
+    ... on Repository {
+      id
+      pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
+        edges {
+          node {
+            ... on PullRequest {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;
+exports.associatedPullRequest = `
+query ($owner: String!, $name: String!, $expression: String!) {
+  repository(owner: $owner, name: $name) {
+    object(expression: $expression) {
+      ... on Commit {
+        associatedPullRequests(first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
+          edges {
+            node {
+              ... on PullRequest {
+                title
+                number
+                author {
+                  login
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}      
+`;
+exports.createPullRequest = `
+mutation ($input: CreatePullRequestInput!) {
+  createPullRequest(input: $input) {
+    pullRequest {
+      ... on PullRequest {
+        number
+      }
+    }
+  }
+}
+`;
+exports.updatePullRequest = `
+mutation ($input: UpdatePullRequestInput!) {
+  updatePullRequest(input: $input) {
+    pullRequest {
+      ... on PullRequest {
+        number
+      }
+    }
+  }
+}
+`;
 
 
 /***/ }),
