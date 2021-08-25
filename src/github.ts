@@ -11,7 +11,6 @@ type ExistingPullRequest = {id: string}
 
 export type PullRequestItem = {
   number: number
-  title: string
   author: string
 }
 
@@ -128,7 +127,6 @@ export class GitHub {
 
     const pr: PullRequestItem = {
       number: commit.associatedPullRequests.edges[0].node.number,
-      title: commit.associatedPullRequests.edges[0].node.title,
       author: commit.associatedPullRequests.edges[0].node.author.login
     }
     return new Promise(resolve => {
