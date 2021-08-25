@@ -26,7 +26,6 @@ query ($owner: String!, $name: String!, $expression: String!) {
           edges {
             node {
               ... on PullRequest {
-                title
                 number
                 author {
                   login

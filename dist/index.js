@@ -119,7 +119,6 @@ class GitHub {
             return undefined;
         const pr = {
             number: commit.associatedPullRequests.edges[0].node.number,
-            title: commit.associatedPullRequests.edges[0].node.title,
             author: commit.associatedPullRequests.edges[0].node.author.login
         };
         return new Promise(resolve => {
@@ -328,7 +327,6 @@ query ($owner: String!, $name: String!, $expression: String!) {
           edges {
             node {
               ... on PullRequest {
-                title
                 number
                 author {
                   login
@@ -377,7 +375,7 @@ class Template {
     }
     checkList() {
         return this.pullRequests.reduce((v, pr) => {
-            return `${v}- #${pr.number} ${pr.title} @${pr.author}\n`;
+            return `${v}- #${pr.number} @${pr.author}\n`;
         }, '');
     }
 }
