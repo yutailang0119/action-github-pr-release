@@ -3,7 +3,6 @@ import {
   Repository,
   Commit,
   CreatePullRequestInput,
-  CreatePullRequestPayload,
   UpdatePullRequestInput,
   UpdatePullRequestPayload
 } from '@octokit/graphql-schema'
@@ -65,7 +64,7 @@ export class GitHub {
     headRefName: string,
     title: string,
     body: string
-  ): Promise<number> {
+  ): Promise<void> {
     const octokit = github.getOctokit(this.token)
 
     const input: CreatePullRequestInput = {
@@ -75,21 +74,13 @@ export class GitHub {
       title,
       body
     }
-    const {payload} = await octokit.graphql<{
-      payload: CreatePullRequestPayload
-    }>({
+    await octokit.graphql({
       query: query.createPullRequest,
       input
     })
 
-    if (payload.pullRequest === undefined)
-      throw Error(`Cannot read property 'pullRequest' of undefined`)
-    if (payload.pullRequest === null)
-      throw Error(`Cannot read property 'pullRequest' of null`)
-    const pullRequestNumber = payload.pullRequest.number
-
     return new Promise(resolve => {
-      resolve(pullRequestNumber)
+      resolve()
     })
   }
 
