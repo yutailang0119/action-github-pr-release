@@ -14,7 +14,5 @@ test('checkList', () => {
     {number: 123, author: 'yutailang0119'}
   ]
   const template = new Template(date, pullRequests)
-  expect(template.checkList()).toEqual(
-    `- #123 @yutailang0119\n- #456 @y7g\n`
-  )
+  expect(template.checkList()).toEqual(`- #123 @yutailang0119\n- #456 @y7g\n`)
 })
