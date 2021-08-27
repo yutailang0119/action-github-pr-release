@@ -59,8 +59,12 @@ async function run(): Promise<void> {
         )
       }
     }
-  } catch (error) {
-    core.setFailed(error.message)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      core.setFailed(error)
+    } else {
+      throw error
+    }
   }
 }
 
