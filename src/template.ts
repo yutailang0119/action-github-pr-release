@@ -17,8 +17,8 @@ export class Template {
 
   checkList(): string {
     return this.pullRequests.reduce(
-      (v: string, pr: PullRequestItem): string => {
-        return `${v}- #${pr.number} @${pr.author}\n`
+      (p: string, pr: PullRequestItem): string => {
+        return `${p}- #${pr.number} @${pr.author}\n`
       },
       ''
     )
