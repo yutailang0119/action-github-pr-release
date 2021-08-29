@@ -144,9 +144,10 @@ export class GitHub {
     let page: number | undefined = undefined
     const shas: string[] = []
     while (!Number.isNaN(page)) {
-      // https://docs.github.com/en/rest/reference/repos#compare-two-commits
-      await octokit.rest.repos
-        .compareCommits({
+      let response
+      try {
+        // https://docs.github.com/en/rest/reference/repos#compare-two-commits
+        response = await octokit.rest.repos.compareCommits({
           owner: this.owner,
           repo: this.name,
           base: baseRefName,
@@ -154,29 +155,28 @@ export class GitHub {
           per_page: perPage ?? 100,
           page
         })
-        .then(response => {
-          for (const commit of response.data.commits) {
-            shas.push(commit.sha)
-          }
+      } catch (error) {
+        throw error
+      }
 
-          // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
-          const next: string | undefined = ((response.headers.link || '').match(
-            /<([^>]+)>;\s*rel="next"/
-          ) || [])[1]
-          if (next === undefined) {
-            page = NaN
-            return
-          }
-          const p = new URL(next).searchParams.get('page')
-          if (p === null) {
-            page = NaN
-            return
-          }
-          page = Number(p)
-        })
-        .catch(error => {
-          throw error
-        })
+      for (const commit of response.data.commits) {
+        shas.push(commit.sha)
+      }
+
+      // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
+      const next: string | undefined = ((response.headers.link || '').match(
+        /<([^>]+)>;\s*rel="next"/
+      ) || [])[1]
+      if (next === undefined) {
+        page = NaN
+        continue
+      }
+      const p = new URL(next).searchParams.get('page')
+      if (p === null) {
+        page = NaN
+        continue
+      }
+      page = Number(p)
     }
 
     return new Promise(resolve => {
