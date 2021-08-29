@@ -125,7 +125,7 @@ class GitHub {
             resolve(pr);
         });
     }
-    async compareSHAs(baseRefName, headRefName) {
+    async compareSHAs(baseRefName, headRefName, perPage) {
         const octokit = github.getOctokit(this.token);
         let page = undefined;
         const shas = [];
@@ -138,7 +138,7 @@ class GitHub {
                     repo: this.name,
                     base: baseRefName,
                     head: headRefName,
-                    per_page: 100,
+                    per_page: perPage !== null && perPage !== void 0 ? perPage : 100,
                     page
                 });
             }
@@ -285,12 +285,7 @@ async function run() {
         }
     }
     catch (error) {
-        if (error instanceof Error) {
-            core.setFailed(error);
-        }
-        else {
-            throw error;
-        }
+        core.setFailed(error.message);
     }
 }
 run();
@@ -379,8 +374,8 @@ class Template {
         return `Release ${this.date}`;
     }
     checkList() {
-        return this.pullRequests.reduce((v, pr) => {
-            return `${v}- #${pr.number} @${pr.author}\n`;
+        return this.pullRequests.reduce((p, pr) => {
+            return `${p}- #${pr.number} @${pr.author}\n`;
         }, '');
     }
 }
