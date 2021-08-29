@@ -136,7 +136,8 @@ export class GitHub {
 
   async compareSHAs(
     baseRefName: string,
-    headRefName: string
+    headRefName: string,
+    perPage?: number
   ): Promise<string[]> {
     const octokit = github.getOctokit(this.token)
 
@@ -151,7 +152,7 @@ export class GitHub {
           repo: this.name,
           base: baseRefName,
           head: headRefName,
-          per_page: 100,
+          per_page: perPage ?? 100,
           page
         })
       } catch (error) {
