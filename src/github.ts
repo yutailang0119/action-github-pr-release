@@ -56,6 +56,36 @@ export class GitHub {
     })
   }
 
+  async associatedPullRequest(
+    expression: string
+  ): Promise<PullRequestItem | undefined> {
+    const octokit = github.getOctokit(this.token)
+
+    const {repository} = await octokit.graphql<{repository: Repository}>({
+      query: query.associatedPullRequest,
+      owner: this.owner,
+      name: this.name,
+      expression
+    })
+    const commit = repository.object as Commit
+
+    if (commit.associatedPullRequests?.edges === undefined) return undefined
+    if (commit.associatedPullRequests.edges === null) return undefined
+    if (commit.associatedPullRequests.edges.length === 0) return undefined
+    if (commit.associatedPullRequests.edges[0]?.node?.author === undefined)
+      return undefined
+    if (commit.associatedPullRequests.edges[0].node.author === null)
+      return undefined
+
+    const pr: PullRequestItem = {
+      number: commit.associatedPullRequests.edges[0].node.number,
+      author: commit.associatedPullRequests.edges[0].node.author.login
+    }
+    return new Promise(resolve => {
+      resolve(pr)
+    })
+  }
+
   async createPullRequest(
     repositoryId: string,
     baseRefName: string,
@@ -101,36 +131,6 @@ export class GitHub {
 
     return new Promise(resolve => {
       resolve()
-    })
-  }
-
-  async associatedPullRequest(
-    expression: string
-  ): Promise<PullRequestItem | undefined> {
-    const octokit = github.getOctokit(this.token)
-
-    const {repository} = await octokit.graphql<{repository: Repository}>({
-      query: query.associatedPullRequest,
-      owner: this.owner,
-      name: this.name,
-      expression
-    })
-    const commit = repository.object as Commit
-
-    if (commit.associatedPullRequests?.edges === undefined) return undefined
-    if (commit.associatedPullRequests.edges === null) return undefined
-    if (commit.associatedPullRequests.edges.length === 0) return undefined
-    if (commit.associatedPullRequests.edges[0]?.node?.author === undefined)
-      return undefined
-    if (commit.associatedPullRequests.edges[0].node.author === null)
-      return undefined
-
-    const pr: PullRequestItem = {
-      number: commit.associatedPullRequests.edges[0].node.number,
-      author: commit.associatedPullRequests.edges[0].node.author.login
-    }
-    return new Promise(resolve => {
-      resolve(pr)
     })
   }
 
