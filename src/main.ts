@@ -39,24 +39,17 @@ async function run(): Promise<void> {
       core.info(title)
       core.info(body)
     } else {
-      const existingPullRequest = await gh.detectExistingPullRequest(
-        productionBranch,
-        stagingBranch
-      )
-      if (existingPullRequest.pullRequest === undefined) {
+      const repository = await gh.repository(productionBranch, stagingBranch)
+      if (repository.pullRequest === undefined) {
         await gh.createPullRequest(
-          existingPullRequest.repositoryId,
+          repository.id,
           productionBranch,
           stagingBranch,
           title,
           body
         )
       } else {
-        await gh.updatePullRequest(
-          existingPullRequest.pullRequest.id,
-          title,
-          body
-        )
+        await gh.updatePullRequest(repository.pullRequest.id, title, body)
       }
     }
   } catch (error) {

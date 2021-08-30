@@ -23,10 +23,10 @@ export class GitHub {
     this.name = name
   }
 
-  async detectExistingPullRequest(
+  async repository(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequest?: {id: string}}> {
+  ): Promise<{id: string; pullRequest?: {id: string}}> {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
@@ -48,7 +48,7 @@ export class GitHub {
 
     return new Promise(resolve => {
       resolve({
-        repositoryId: repository.id,
+        id: repository.id,
         pullRequest: pullRequest()
       })
     })
