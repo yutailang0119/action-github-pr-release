@@ -1,8 +1,8 @@
 import {validate} from '@octokit/graphql-schema'
 import * as query from '../src/query'
 
-test('validate detectExistingPullRequest', () => {
-  validate(query.detectExistingPullRequest)
+test('validate repository', () => {
+  validate(query.repository)
 })
 
 test('validate associatedPullRequest', () => {
