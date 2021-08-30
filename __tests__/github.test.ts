@@ -1,7 +1,7 @@
 import * as process from 'process'
 import {GitHub} from '../src/github'
 
-test('detectExistingPullRequest', async () => {
+test('repository', async () => {
   const repository = process.env.TEST_REPOSITORY ?? '/'
   const splited = repository.split('/')
   const owner = splited[0]
@@ -15,16 +15,13 @@ test('detectExistingPullRequest', async () => {
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.repository(
-    productionBranch,
-    stagingBranch
-  )
-  expect(result.repositoryId).toEqual(repositoryId)
+  const result = await gh.repository(productionBranch, stagingBranch)
+  expect(result.id).toEqual(repositoryId)
   expect(result.pullRequest).not.toBeUndefined()
   expect(result.pullRequest!.id).toEqual(pullRequestId)
 })
 
-test('Not Found detectExistingPullRequest', async () => {
+test('Not Found repository.pullRequest', async () => {
   const repository = process.env.TEST_REPOSITORY ?? '/'
   const splited = repository.split('/')
   const owner = splited[0]
@@ -37,11 +34,8 @@ test('Not Found detectExistingPullRequest', async () => {
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.detectExistingPullRequest(
-    productionBranch,
-    emptyBranch
-  )
-  expect(result.repositoryId).toEqual(repositoryId)
+  const result = await gh.repository(productionBranch, emptyBranch)
+  expect(result.id).toEqual(repositoryId)
   expect(result.pullRequest).toBeUndefined()
 })
 
