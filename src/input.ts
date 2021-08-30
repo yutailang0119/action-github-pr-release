@@ -1,16 +1,14 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-export type Inputs = {
+export function getInputs(): {
   token: string
   owner: string
   repo: string
   productionBranch: string
   stagingBranch: string
   isDryRun: boolean
-}
-
-export function getInputs(): Inputs {
+} {
   const {owner, repo} = repository()
   const token = core.getInput('token', {required: true})
   const productionBranch = core.getInput('production_branch')
