@@ -30,7 +30,7 @@ export class GitHub {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
-      query: query.detectExistingPullRequest,
+      query: query.repository,
       owner: this.owner,
       name: this.name,
       baseRefName,

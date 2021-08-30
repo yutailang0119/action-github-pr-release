@@ -15,7 +15,7 @@ test('detectExistingPullRequest', async () => {
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.detectExistingPullRequest(
+  const result = await gh.repository(
     productionBranch,
     stagingBranch
   )
