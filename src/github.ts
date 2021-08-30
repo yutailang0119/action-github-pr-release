@@ -7,8 +7,6 @@ import {
 } from '@octokit/graphql-schema'
 import * as query from './query'
 
-type ExistingPullRequest = {id: string}
-
 export type PullRequestItem = {
   number: number
   author: string
@@ -28,7 +26,7 @@ export class GitHub {
   async detectExistingPullRequest(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequest?: ExistingPullRequest}> {
+  ): Promise<{repositoryId: string; pullRequest?: {id: string}}> {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
@@ -38,7 +36,7 @@ export class GitHub {
       baseRefName,
       headRefName
     })
-    const pullRequest = (): ExistingPullRequest | undefined => {
+    const pullRequest = (): {id: string} | undefined => {
       if (repository.pullRequests.edges === undefined) return undefined
       if (repository.pullRequests.edges === null) return undefined
       if (repository.pullRequests.edges.length === 0) return undefined
