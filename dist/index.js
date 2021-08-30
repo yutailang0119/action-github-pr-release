@@ -35,10 +35,10 @@ class GitHub {
         this.owner = owner;
         this.name = name;
     }
-    async detectExistingPullRequest(baseRefName, headRefName) {
+    async repository(baseRefName, headRefName) {
         const octokit = github.getOctokit(this.token);
         const { repository } = await octokit.graphql({
-            query: query.detectExistingPullRequest,
+            query: query.repository,
             owner: this.owner,
             name: this.name,
             baseRefName,
@@ -60,9 +60,37 @@ class GitHub {
         };
         return new Promise(resolve => {
             resolve({
-                repositoryId: repository.id,
+                id: repository.id,
                 pullRequest: pullRequest()
             });
+        });
+    }
+    async associatedPullRequest(expression) {
+        var _a, _b, _c;
+        const octokit = github.getOctokit(this.token);
+        const { repository } = await octokit.graphql({
+            query: query.associatedPullRequest,
+            owner: this.owner,
+            name: this.name,
+            expression
+        });
+        const commit = repository.object;
+        if (((_a = commit.associatedPullRequests) === null || _a === void 0 ? void 0 : _a.edges) === undefined)
+            return undefined;
+        if (commit.associatedPullRequests.edges === null)
+            return undefined;
+        if (commit.associatedPullRequests.edges.length === 0)
+            return undefined;
+        if (((_c = (_b = commit.associatedPullRequests.edges[0]) === null || _b === void 0 ? void 0 : _b.node) === null || _c === void 0 ? void 0 : _c.author) === undefined)
+            return undefined;
+        if (commit.associatedPullRequests.edges[0].node.author === null)
+            return undefined;
+        const pr = {
+            number: commit.associatedPullRequests.edges[0].node.number,
+            author: commit.associatedPullRequests.edges[0].node.author.login
+        };
+        return new Promise(resolve => {
+            resolve(pr);
         });
     }
     async createPullRequest(repositoryId, baseRefName, headRefName, title, body) {
@@ -95,34 +123,6 @@ class GitHub {
         });
         return new Promise(resolve => {
             resolve();
-        });
-    }
-    async associatedPullRequest(expression) {
-        var _a, _b, _c;
-        const octokit = github.getOctokit(this.token);
-        const { repository } = await octokit.graphql({
-            query: query.associatedPullRequest,
-            owner: this.owner,
-            name: this.name,
-            expression
-        });
-        const commit = repository.object;
-        if (((_a = commit.associatedPullRequests) === null || _a === void 0 ? void 0 : _a.edges) === undefined)
-            return undefined;
-        if (commit.associatedPullRequests.edges === null)
-            return undefined;
-        if (commit.associatedPullRequests.edges.length === 0)
-            return undefined;
-        if (((_c = (_b = commit.associatedPullRequests.edges[0]) === null || _b === void 0 ? void 0 : _b.node) === null || _c === void 0 ? void 0 : _c.author) === undefined)
-            return undefined;
-        if (commit.associatedPullRequests.edges[0].node.author === null)
-            return undefined;
-        const pr = {
-            number: commit.associatedPullRequests.edges[0].node.number,
-            author: commit.associatedPullRequests.edges[0].node.author.login
-        };
-        return new Promise(resolve => {
-            resolve(pr);
         });
     }
     async compareSHAs(baseRefName, headRefName, perPage) {
@@ -275,12 +275,12 @@ async function run() {
             core.info(body);
         }
         else {
-            const existingPullRequest = await gh.detectExistingPullRequest(productionBranch, stagingBranch);
-            if (existingPullRequest.pullRequest === undefined) {
-                await gh.createPullRequest(existingPullRequest.repositoryId, productionBranch, stagingBranch, title, body);
+            const repository = await gh.repository(productionBranch, stagingBranch);
+            if (repository.pullRequest === undefined) {
+                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, title, body);
             }
             else {
-                await gh.updatePullRequest(existingPullRequest.pullRequest.id, title, body);
+                await gh.updatePullRequest(repository.pullRequest.id, title, body);
             }
         }
     }
@@ -299,8 +299,8 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updatePullRequest = exports.createPullRequest = exports.associatedPullRequest = exports.detectExistingPullRequest = void 0;
-exports.detectExistingPullRequest = `
+exports.updatePullRequest = exports.createPullRequest = exports.associatedPullRequest = exports.repository = void 0;
+exports.repository = `
 query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
   repository(owner: $owner, name: $name) {
     ... on Repository {
