@@ -7,8 +7,6 @@ import {
 } from '@octokit/graphql-schema'
 import * as query from './query'
 
-type ExistingPullRequest = {id: string}
-
 export type PullRequestItem = {
   number: number
   author: string
@@ -25,20 +23,20 @@ export class GitHub {
     this.name = name
   }
 
-  async detectExistingPullRequest(
+  async repository(
     baseRefName: string,
     headRefName: string
-  ): Promise<{repositoryId: string; pullRequest?: ExistingPullRequest}> {
+  ): Promise<{id: string; pullRequest?: {id: string}}> {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
-      query: query.detectExistingPullRequest,
+      query: query.repository,
       owner: this.owner,
       name: this.name,
       baseRefName,
       headRefName
     })
-    const pullRequest = (): ExistingPullRequest | undefined => {
+    const pullRequest = (): {id: string} | undefined => {
       if (repository.pullRequests.edges === undefined) return undefined
       if (repository.pullRequests.edges === null) return undefined
       if (repository.pullRequests.edges.length === 0) return undefined
@@ -50,9 +48,39 @@ export class GitHub {
 
     return new Promise(resolve => {
       resolve({
-        repositoryId: repository.id,
+        id: repository.id,
         pullRequest: pullRequest()
       })
+    })
+  }
+
+  async associatedPullRequest(
+    expression: string
+  ): Promise<PullRequestItem | undefined> {
+    const octokit = github.getOctokit(this.token)
+
+    const {repository} = await octokit.graphql<{repository: Repository}>({
+      query: query.associatedPullRequest,
+      owner: this.owner,
+      name: this.name,
+      expression
+    })
+    const commit = repository.object as Commit
+
+    if (commit.associatedPullRequests?.edges === undefined) return undefined
+    if (commit.associatedPullRequests.edges === null) return undefined
+    if (commit.associatedPullRequests.edges.length === 0) return undefined
+    if (commit.associatedPullRequests.edges[0]?.node?.author === undefined)
+      return undefined
+    if (commit.associatedPullRequests.edges[0].node.author === null)
+      return undefined
+
+    const pr: PullRequestItem = {
+      number: commit.associatedPullRequests.edges[0].node.number,
+      author: commit.associatedPullRequests.edges[0].node.author.login
+    }
+    return new Promise(resolve => {
+      resolve(pr)
     })
   }
 
@@ -101,36 +129,6 @@ export class GitHub {
 
     return new Promise(resolve => {
       resolve()
-    })
-  }
-
-  async associatedPullRequest(
-    expression: string
-  ): Promise<PullRequestItem | undefined> {
-    const octokit = github.getOctokit(this.token)
-
-    const {repository} = await octokit.graphql<{repository: Repository}>({
-      query: query.associatedPullRequest,
-      owner: this.owner,
-      name: this.name,
-      expression
-    })
-    const commit = repository.object as Commit
-
-    if (commit.associatedPullRequests?.edges === undefined) return undefined
-    if (commit.associatedPullRequests.edges === null) return undefined
-    if (commit.associatedPullRequests.edges.length === 0) return undefined
-    if (commit.associatedPullRequests.edges[0]?.node?.author === undefined)
-      return undefined
-    if (commit.associatedPullRequests.edges[0].node.author === null)
-      return undefined
-
-    const pr: PullRequestItem = {
-      number: commit.associatedPullRequests.edges[0].node.number,
-      author: commit.associatedPullRequests.edges[0].node.author.login
-    }
-    return new Promise(resolve => {
-      resolve(pr)
     })
   }
 

@@ -1,4 +1,4 @@
-export const detectExistingPullRequest = `
+export const repository = `
 query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
   repository(owner: $owner, name: $name) {
     ... on Repository {
