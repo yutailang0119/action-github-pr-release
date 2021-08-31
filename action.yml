@@ -16,6 +16,9 @@ inputs:
   dry_run:
     description: 'Do not create/update a PR. Just prints out.'
     default: false
+  draft:
+    description: 'Create a pull request as a draft.'
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -17,6 +17,7 @@ This action's features is based on [x-motemen/git-pr-release](https://github.com
     - [ ] Difference update
 - [ ] Add labels
 - [ ] Replace mention
+- [x] Draft
 - [ ] Support command options
     - [ ] `squash`: Squash and merge
     - [ ] `no-fetch`: Do not fetch from remote repo before determining target PRs
