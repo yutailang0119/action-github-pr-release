@@ -112,15 +112,14 @@ export class GitHub {
 
   async updatePullRequest(
     pullRequestId: string,
-    title: string,
-    body: string
+    template: Template
   ): Promise<void> {
     const octokit = github.getOctokit(this.token)
 
     const input: UpdatePullRequestInput = {
       pullRequestId,
-      title,
-      body
+      title: template.title(),
+      body: template.body()
     }
     await octokit.graphql({
       query: query.updatePullRequest,
