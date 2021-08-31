@@ -93,14 +93,15 @@ class GitHub {
             resolve(pr);
         });
     }
-    async createPullRequest(repositoryId, baseRefName, headRefName, template) {
+    async createPullRequest(repositoryId, baseRefName, headRefName, template, draft) {
         const octokit = github.getOctokit(this.token);
         const input = {
             repositoryId,
             baseRefName,
             headRefName,
             title: template.title(),
-            body: template.body()
+            body: template.body(),
+            draft
         };
         await octokit.graphql({
             query: query.createPullRequest,
@@ -205,7 +206,16 @@ function getInputs() {
     const productionBranch = core.getInput('production_branch');
     const stagingBranch = core.getInput('staging_branch');
     const isDryRun = core.getBooleanInput('dry_run');
-    return { token, owner, repo, productionBranch, stagingBranch, isDryRun };
+    const isDraft = core.getBooleanInput('draft');
+    return {
+        token,
+        owner,
+        repo,
+        productionBranch,
+        stagingBranch,
+        isDryRun,
+        isDraft
+    };
 }
 exports.getInputs = getInputs;
 function repository() {
@@ -275,7 +285,7 @@ async function run() {
         else {
             const repository = await gh.repository(productionBranch, stagingBranch);
             if (repository.pullRequest === undefined) {
-                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template);
+                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template, inputs.isDraft);
             }
             else {
                 await gh.updatePullRequest(repository.pullRequest.id, template);
