@@ -7,15 +7,17 @@ export function getInputs(): {
   repo: string
   productionBranch: string
   stagingBranch: string
+  label: string
   isDryRun: boolean
 } {
   const {owner, repo} = repository()
   const token = core.getInput('token', {required: true})
   const productionBranch = core.getInput('production_branch')
   const stagingBranch = core.getInput('staging_branch')
+  const label = core.getInput('label')
   const isDryRun = core.getBooleanInput('dry_run')
 
-  return {token, owner, repo, productionBranch, stagingBranch, isDryRun}
+  return {token, owner, repo, productionBranch, stagingBranch, label, isDryRun}
 }
 
 function repository(): {owner: string; repo: string} {
