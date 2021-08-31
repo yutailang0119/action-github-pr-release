@@ -35,7 +35,8 @@ async function run(): Promise<void> {
 
     const template = new Template(
       new Date(),
-      pullRequests.flatMap(pr => pr ?? [])
+      pullRequests.flatMap(pr => pr ?? []),
+      repository.labelId !== undefined ? [repository.labelId] : undefined
     )
 
     if (inputs.isDryRun) {
