@@ -32,7 +32,7 @@ async function run(): Promise<void> {
       pullRequests.flatMap(pr => pr ?? [])
     )
     const title = template.title()
-    const body = template.checkList()
+    const body = template.body()
 
     if (inputs.isDryRun) {
       core.info('Dry-run. Not mutating Pull Request.')
