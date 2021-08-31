@@ -33,6 +33,11 @@ async function run(): Promise<void> {
       inputs.label
     )
 
+    if (inputs.label.length !== 0 && repository.labelId === undefined) {
+      core.setFailed(`Not found ${inputs.label}`)
+      return
+    }
+
     const template = new Template(
       new Date(),
       pullRequests.flatMap(pr => pr ?? []),
