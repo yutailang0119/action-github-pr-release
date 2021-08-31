@@ -27,6 +27,12 @@ async function run(): Promise<void> {
       return
     }
 
+    const repository = await gh.repository(
+      productionBranch,
+      stagingBranch,
+      inputs.label
+    )
+
     const template = new Template(
       new Date(),
       pullRequests.flatMap(pr => pr ?? [])
@@ -37,7 +43,6 @@ async function run(): Promise<void> {
       core.info(template.title())
       core.info(template.checkList())
     } else {
-      const repository = await gh.repository(productionBranch, stagingBranch)
       if (repository.pullRequest === undefined) {
         await gh.createPullRequest(
           repository.id,
