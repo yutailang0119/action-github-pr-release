@@ -15,7 +15,7 @@ test('repository', async () => {
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.repository(productionBranch, stagingBranch)
+  const result = await gh.repository(productionBranch, stagingBranch, '')
   expect(result.id).toEqual(repositoryId)
   expect(result.pullRequest).not.toBeUndefined()
   expect(result.pullRequest!.id).toEqual(pullRequestId)
@@ -34,9 +34,27 @@ test('Not Found repository.pullRequest', async () => {
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.repository(productionBranch, emptyBranch)
+  const result = await gh.repository(productionBranch, emptyBranch, '')
   expect(result.id).toEqual(repositoryId)
   expect(result.pullRequest).toBeUndefined()
+})
+
+test('repository.labelId', async () => {
+  const repository = process.env.TEST_REPOSITORY ?? '/'
+  const splited = repository.split('/')
+  const owner = splited[0]
+  const name = splited[1]
+
+  const token = process.env.TEST_TOKEN ?? ''
+  const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
+  const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
+  const labelName = process.env.TEST_LABEL_NAME
+  const labelId = process.env.TEST_LABEL_ID
+
+  const gh = new GitHub(token, owner, name)
+
+  const result = await gh.repository(productionBranch, stagingBranch, labelName)
+  expect(result.labelId).toEqual(labelId)
 })
 
 test('associatedPullRequest', async () => {
