@@ -31,13 +31,11 @@ async function run(): Promise<void> {
       new Date(),
       pullRequests.flatMap(pr => pr ?? [])
     )
-    const title = template.title()
-    const body = template.checkList()
 
     if (inputs.isDryRun) {
       core.info('Dry-run. Not mutating Pull Request.')
-      core.info(title)
-      core.info(body)
+      core.info(template.title())
+      core.info(template.body())
     } else {
       const repository = await gh.repository(productionBranch, stagingBranch)
       if (repository.pullRequest === undefined) {
@@ -45,11 +43,10 @@ async function run(): Promise<void> {
           repository.id,
           productionBranch,
           stagingBranch,
-          title,
-          body
+          template
         )
       } else {
-        await gh.updatePullRequest(repository.pullRequest.id, title, body)
+        await gh.updatePullRequest(repository.pullRequest.id, template)
       }
     }
   } catch (error) {

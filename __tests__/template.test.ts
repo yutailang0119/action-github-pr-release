@@ -6,7 +6,7 @@ test('title', () => {
   expect(template.title()).toEqual(`Release ${date}`)
 })
 
-test('checkList', () => {
+test('body', () => {
   const date = new Date()
   const pullRequests = [
     {number: 123, author: 'yutailang0119'},
@@ -14,5 +14,5 @@ test('checkList', () => {
     {number: 123, author: 'yutailang0119'}
   ]
   const template = new Template(date, pullRequests)
-  expect(template.checkList()).toEqual(`- #123 @yutailang0119\n- #456 @y7g\n`)
+  expect(template.body()).toEqual(`- #123 @yutailang0119\n- #456 @y7g\n`)
 })

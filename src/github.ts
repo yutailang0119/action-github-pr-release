@@ -6,6 +6,7 @@ import {
   UpdatePullRequestInput
 } from '@octokit/graphql-schema'
 import * as query from './query'
+import {Template} from './template'
 
 export type PullRequestItem = {
   number: number
@@ -88,8 +89,7 @@ export class GitHub {
     repositoryId: string,
     baseRefName: string,
     headRefName: string,
-    title: string,
-    body: string
+    template: Template
   ): Promise<void> {
     const octokit = github.getOctokit(this.token)
 
@@ -97,8 +97,8 @@ export class GitHub {
       repositoryId,
       baseRefName,
       headRefName,
-      title,
-      body
+      title: template.title(),
+      body: template.body()
     }
     await octokit.graphql({
       query: query.createPullRequest,
@@ -112,15 +112,14 @@ export class GitHub {
 
   async updatePullRequest(
     pullRequestId: string,
-    title: string,
-    body: string
+    template: Template
   ): Promise<void> {
     const octokit = github.getOctokit(this.token)
 
     const input: UpdatePullRequestInput = {
       pullRequestId,
-      title,
-      body
+      title: template.title(),
+      body: template.body()
     }
     await octokit.graphql({
       query: query.updatePullRequest,
