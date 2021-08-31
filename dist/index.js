@@ -93,14 +93,14 @@ class GitHub {
             resolve(pr);
         });
     }
-    async createPullRequest(repositoryId, baseRefName, headRefName, title, body) {
+    async createPullRequest(repositoryId, baseRefName, headRefName, template) {
         const octokit = github.getOctokit(this.token);
         const input = {
             repositoryId,
             baseRefName,
             headRefName,
-            title,
-            body
+            title: template.title(),
+            body: template.body()
         };
         await octokit.graphql({
             query: query.createPullRequest,
@@ -110,12 +110,12 @@ class GitHub {
             resolve();
         });
     }
-    async updatePullRequest(pullRequestId, title, body) {
+    async updatePullRequest(pullRequestId, template) {
         const octokit = github.getOctokit(this.token);
         const input = {
             pullRequestId,
-            title,
-            body
+            title: template.title(),
+            body: template.body()
         };
         await octokit.graphql({
             query: query.updatePullRequest,
@@ -267,20 +267,18 @@ async function run() {
             return;
         }
         const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []));
-        const title = template.title();
-        const body = template.checkList();
         if (inputs.isDryRun) {
             core.info('Dry-run. Not mutating Pull Request.');
-            core.info(title);
-            core.info(body);
+            core.info(template.title());
+            core.info(template.body());
         }
         else {
             const repository = await gh.repository(productionBranch, stagingBranch);
             if (repository.pullRequest === undefined) {
-                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, title, body);
+                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template);
             }
             else {
-                await gh.updatePullRequest(repository.pullRequest.id, title, body);
+                await gh.updatePullRequest(repository.pullRequest.id, template);
             }
         }
     }
@@ -373,7 +371,7 @@ class Template {
     title() {
         return `Release ${this.date}`;
     }
-    checkList() {
+    body() {
         return this.pullRequests.reduce((p, pr) => {
             return `${p}- #${pr.number} @${pr.author}\n`;
         }, '');
