@@ -145,7 +145,8 @@ export class GitHub {
     const input: UpdatePullRequestInput = {
       pullRequestId,
       title: template.title(),
-      body: template.body()
+      body: template.body(),
+      labelIds: template.labelIds
     }
     const {updatePullRequest} = await octokit.graphql<{
       updatePullRequest: UpdatePullRequestPayload
