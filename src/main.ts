@@ -48,6 +48,8 @@ async function run(): Promise<void> {
       core.info('Dry-run. Not mutating Pull Request.')
       core.info(template.title())
       core.info(template.body())
+      if (inputs.label !== undefined)
+        core.info(`${inputs.label}: ${template.labelIds?.join(',')}`)
     } else {
       let pullRequestId: string
       if (repository.pullRequest === undefined) {
