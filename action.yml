@@ -15,11 +15,11 @@ inputs:
     default: 'develop'
   label:
     description: 'Label for adding to pull requests created. If not specified, any labels will not be added for PRs.'
-  dry_run:
-    description: 'Do not create/update a PR. Just prints out.'
-    default: false
   draft:
     description: 'Create a pull request as a draft.'
+    default: false
+  dry_run:
+    description: 'Do not create/update a PR. Just prints out.'
     default: false
 runs:
   using: 'node12'
