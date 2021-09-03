@@ -12,13 +12,16 @@ test('repository', async () => {
   const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
   const repositoryId = process.env.TEST_REPOSITORY_ID
   const pullRequestId = process.env.TEST_EXISTING_PULL_REQUEST_ID
+  const labelName = process.env.TEST_REPOSITORY_LABEL_NAME ?? ''
+  const labelId = process.env.TEST_REPOSITORY_LABEL_ID
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.repository(productionBranch, stagingBranch, '')
+  const result = await gh.repository(productionBranch, stagingBranch, labelName)
   expect(result.id).toEqual(repositoryId)
   expect(result.pullRequest).not.toBeUndefined()
   expect(result.pullRequest!.id).toEqual(pullRequestId)
+  expect(result.labelId).toEqual(labelId)
 })
 
 test('Not Found repository.pullRequest', async () => {
@@ -34,12 +37,12 @@ test('Not Found repository.pullRequest', async () => {
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.repository(productionBranch, emptyBranch, '')
+  const result = await gh.repository(productionBranch, emptyBranch)
   expect(result.id).toEqual(repositoryId)
   expect(result.pullRequest).toBeUndefined()
 })
 
-test('repository.labelId', async () => {
+test('Not Found repository.labelId', async () => {
   const repository = process.env.TEST_REPOSITORY ?? '/'
   const splited = repository.split('/')
   const owner = splited[0]
@@ -48,13 +51,17 @@ test('repository.labelId', async () => {
   const token = process.env.TEST_TOKEN ?? ''
   const productionBranch = process.env.TEST_PRODUCTION_BRANCH ?? ''
   const stagingBranch = process.env.TEST_STAGING_BRANCH ?? ''
-  const labelName = process.env.TEST_LABEL_NAME
-  const labelId = process.env.TEST_LABEL_ID
+  const repositoryId = process.env.TEST_REPOSITORY_ID
 
   const gh = new GitHub(token, owner, name)
 
-  const result = await gh.repository(productionBranch, stagingBranch, labelName)
-  expect(result.labelId).toEqual(labelId)
+  const result = await gh.repository(
+    productionBranch,
+    stagingBranch,
+    'a0b1c2d3d4e5f6g7h8i9'
+  )
+  expect(result.id).toEqual(repositoryId)
+  expect(result.labelId).toBeUndefined()
 })
 
 test('associatedPullRequest', async () => {
