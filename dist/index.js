@@ -132,7 +132,8 @@ class GitHub {
         const input = {
             pullRequestId,
             title: template.title(),
-            body: template.body()
+            body: template.body(),
+            labelIds: template.labelIds
         };
         const { updatePullRequest } = await octokit.graphql({
             query: query.updatePullRequest,
@@ -237,7 +238,7 @@ function getInputs() {
         repo,
         productionBranch,
         stagingBranch,
-        label,
+        label: label.length !== 0 ? label : undefined,
         isDryRun,
         isDraft
     };
@@ -284,6 +285,7 @@ const input_1 = __nccwpck_require__(657);
 const github_1 = __nccwpck_require__(928);
 const template_1 = __nccwpck_require__(32);
 async function run() {
+    var _a;
     try {
         const inputs = input_1.getInputs();
         const productionBranch = inputs.productionBranch;
@@ -302,7 +304,7 @@ async function run() {
             return;
         }
         const repository = await gh.repository(productionBranch, stagingBranch, inputs.label);
-        if (inputs.label.length !== 0 && repository.labelId === undefined) {
+        if (inputs.label !== undefined && repository.labelId === undefined) {
             core.setFailed(`Not found ${inputs.label}`);
             return;
         }
@@ -311,14 +313,18 @@ async function run() {
             core.info('Dry-run. Not mutating Pull Request.');
             core.info(template.title());
             core.info(template.body());
+            if (inputs.label !== undefined)
+                core.info(`${inputs.label}: ${(_a = template.labelIds) === null || _a === void 0 ? void 0 : _a.join(',')}`);
         }
         else {
+            let pullRequestId;
             if (repository.pullRequest === undefined) {
-                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template, inputs.isDraft);
+                pullRequestId = await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template, inputs.isDraft);
             }
             else {
-                await gh.updatePullRequest(repository.pullRequest.id, template);
+                pullRequestId = repository.pullRequest.id;
             }
+            await gh.updatePullRequest(pullRequestId, template);
         }
     }
     catch (error) {
