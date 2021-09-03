@@ -35,14 +35,15 @@ class GitHub {
         this.owner = owner;
         this.name = name;
     }
-    async repository(baseRefName, headRefName) {
+    async repository(baseRefName, headRefName, label) {
         const octokit = github.getOctokit(this.token);
         const { repository } = await octokit.graphql({
             query: query.repository,
             owner: this.owner,
             name: this.name,
             baseRefName,
-            headRefName
+            headRefName,
+            label
         });
         const pullRequest = () => {
             var _a, _b, _c;
@@ -58,9 +59,17 @@ class GitHub {
                 return undefined;
             return { id: repository.pullRequests.edges[0].node.id };
         };
+        const labelId = () => {
+            if (repository.label === undefined)
+                return undefined;
+            if (repository.label === null)
+                return undefined;
+            return repository.label.id;
+        };
         return new Promise(resolve => {
             resolve({
                 id: repository.id,
+                labelId: labelId(),
                 pullRequest: pullRequest()
             });
         });
@@ -219,6 +228,7 @@ function getInputs() {
     const token = core.getInput('token', { required: true });
     const productionBranch = core.getInput('production_branch');
     const stagingBranch = core.getInput('staging_branch');
+    const label = core.getInput('label');
     const isDryRun = core.getBooleanInput('dry_run');
     const isDraft = core.getBooleanInput('draft');
     return {
@@ -227,6 +237,7 @@ function getInputs() {
         repo,
         productionBranch,
         stagingBranch,
+        label,
         isDryRun,
         isDraft
     };
@@ -290,14 +301,18 @@ async function run() {
             core.info("There isn't associated Pull Requests.");
             return;
         }
-        const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []));
+        const repository = await gh.repository(productionBranch, stagingBranch, inputs.label);
+        if (inputs.label.length !== 0 && repository.labelId === undefined) {
+            core.setFailed(`Not found ${inputs.label}`);
+            return;
+        }
+        const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []), repository.labelId !== undefined ? [repository.labelId] : undefined);
         if (inputs.isDryRun) {
             core.info('Dry-run. Not mutating Pull Request.');
             core.info(template.title());
             core.info(template.body());
         }
         else {
-            const repository = await gh.repository(productionBranch, stagingBranch);
             if (repository.pullRequest === undefined) {
                 await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template, inputs.isDraft);
             }
@@ -323,10 +338,13 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updatePullRequest = exports.createPullRequest = exports.associatedPullRequest = exports.repository = void 0;
 exports.repository = `
-query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!) {
+query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!, $label: String!) {
   repository(owner: $owner, name: $name) {
     ... on Repository {
       id
+      label(name: $label) {
+        id
+      }
       pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
         edges {
           node {
@@ -396,9 +414,10 @@ mutation ($input: UpdatePullRequestInput!) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Template = void 0;
 class Template {
-    constructor(date, pullRequests) {
+    constructor(date, pullRequests, labelIds) {
         this.date = date;
         this.pullRequests = Array.from(new Map(pullRequests.map(pr => [pr.number, pr])).values());
+        this.labelIds = labelIds;
     }
     title() {
         return `Release ${this.date}`;
