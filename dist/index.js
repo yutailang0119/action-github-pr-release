@@ -93,36 +93,51 @@ class GitHub {
             resolve(pr);
         });
     }
-    async createPullRequest(repositoryId, baseRefName, headRefName, title, body) {
+    async createPullRequest(repositoryId, baseRefName, headRefName, template, draft) {
         const octokit = github.getOctokit(this.token);
         const input = {
             repositoryId,
             baseRefName,
             headRefName,
-            title,
-            body
+            title: template.title(),
+            body: template.body(),
+            draft
         };
-        await octokit.graphql({
+        const { createPullRequest } = await octokit.graphql({
             query: query.createPullRequest,
             input
         });
+        if (createPullRequest === undefined)
+            throw Error(`Cannot read property 'createPullRequest' of undefined`);
+        if (createPullRequest.pullRequest === undefined)
+            throw Error(`Cannot read property 'createPullRequest.pullRequest' of undefined`);
+        if (createPullRequest.pullRequest === null)
+            throw Error(`Cannot read property 'createPullRequest.pullRequest' of null`);
+        const id = createPullRequest.pullRequest.id;
         return new Promise(resolve => {
-            resolve();
+            resolve(id);
         });
     }
-    async updatePullRequest(pullRequestId, title, body) {
+    async updatePullRequest(pullRequestId, template) {
         const octokit = github.getOctokit(this.token);
         const input = {
             pullRequestId,
-            title,
-            body
+            title: template.title(),
+            body: template.body()
         };
-        await octokit.graphql({
+        const { updatePullRequest } = await octokit.graphql({
             query: query.updatePullRequest,
             input
         });
+        if (updatePullRequest === undefined)
+            throw Error(`Cannot read property 'updatePullRequest' of undefined`);
+        if (updatePullRequest.pullRequest === undefined)
+            throw Error(`Cannot read property 'updatePullRequest.pullRequest' of undefined`);
+        if (updatePullRequest.pullRequest === null)
+            throw Error(`Cannot read property 'updatePullRequest.pullRequest' of null`);
+        const id = updatePullRequest.pullRequest.id;
         return new Promise(resolve => {
-            resolve();
+            resolve(id);
         });
     }
     async compareSHAs(baseRefName, headRefName, perPage) {
@@ -205,7 +220,16 @@ function getInputs() {
     const productionBranch = core.getInput('production_branch');
     const stagingBranch = core.getInput('staging_branch');
     const isDryRun = core.getBooleanInput('dry_run');
-    return { token, owner, repo, productionBranch, stagingBranch, isDryRun };
+    const isDraft = core.getBooleanInput('draft');
+    return {
+        token,
+        owner,
+        repo,
+        productionBranch,
+        stagingBranch,
+        isDryRun,
+        isDraft
+    };
 }
 exports.getInputs = getInputs;
 function repository() {
@@ -267,20 +291,18 @@ async function run() {
             return;
         }
         const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []));
-        const title = template.title();
-        const body = template.checkList();
         if (inputs.isDryRun) {
             core.info('Dry-run. Not mutating Pull Request.');
-            core.info(title);
-            core.info(body);
+            core.info(template.title());
+            core.info(template.body());
         }
         else {
             const repository = await gh.repository(productionBranch, stagingBranch);
             if (repository.pullRequest === undefined) {
-                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, title, body);
+                await gh.createPullRequest(repository.id, productionBranch, stagingBranch, template, inputs.isDraft);
             }
             else {
-                await gh.updatePullRequest(repository.pullRequest.id, title, body);
+                await gh.updatePullRequest(repository.pullRequest.id, template);
             }
         }
     }
@@ -343,14 +365,22 @@ query ($owner: String!, $name: String!, $expression: String!) {
 exports.createPullRequest = `
 mutation ($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `;
 exports.updatePullRequest = `
 mutation ($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `;
@@ -373,7 +403,7 @@ class Template {
     title() {
         return `Release ${this.date}`;
     }
-    checkList() {
+    body() {
         return this.pullRequests.reduce((p, pr) => {
             return `${p}- #${pr.number} @${pr.author}\n`;
         }, '');

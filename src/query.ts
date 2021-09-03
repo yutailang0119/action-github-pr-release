@@ -46,7 +46,11 @@ query ($owner: String!, $name: String!, $expression: String!) {
 export const createPullRequest = `
 mutation ($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `
@@ -54,7 +58,11 @@ mutation ($input: CreatePullRequestInput!) {
 export const updatePullRequest = `
 mutation ($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `

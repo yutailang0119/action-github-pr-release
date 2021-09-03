@@ -47,14 +47,15 @@ async function run(): Promise<void> {
     if (inputs.isDryRun) {
       core.info('Dry-run. Not mutating Pull Request.')
       core.info(template.title())
-      core.info(template.checkList())
+      core.info(template.body())
     } else {
       if (repository.pullRequest === undefined) {
         await gh.createPullRequest(
           repository.id,
           productionBranch,
           stagingBranch,
-          template
+          template,
+          inputs.isDraft
         )
       } else {
         await gh.updatePullRequest(repository.pullRequest.id, template)

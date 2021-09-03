@@ -3,7 +3,9 @@ import {
   Repository,
   Commit,
   CreatePullRequestInput,
-  UpdatePullRequestInput
+  CreatePullRequestPayload,
+  UpdatePullRequestInput,
+  UpdatePullRequestPayload
 } from '@octokit/graphql-schema'
 import * as query from './query'
 import {Template} from './template'
@@ -97,8 +99,9 @@ export class GitHub {
     repositoryId: string,
     baseRefName: string,
     headRefName: string,
-    template: Template
-  ): Promise<void> {
+    template: Template,
+    draft: boolean
+  ): Promise<string> {
     const octokit = github.getOctokit(this.token)
 
     const input: CreatePullRequestInput = {
@@ -106,36 +109,65 @@ export class GitHub {
       baseRefName,
       headRefName,
       title: template.title(),
-      body: template.checkList()
+      body: template.body(),
+      draft
     }
-    await octokit.graphql({
+    const {createPullRequest} = await octokit.graphql<{
+      createPullRequest: CreatePullRequestPayload
+    }>({
       query: query.createPullRequest,
       input
     })
 
+    if (createPullRequest === undefined)
+      throw Error(`Cannot read property 'createPullRequest' of undefined`)
+    if (createPullRequest.pullRequest === undefined)
+      throw Error(
+        `Cannot read property 'createPullRequest.pullRequest' of undefined`
+      )
+    if (createPullRequest.pullRequest === null)
+      throw Error(
+        `Cannot read property 'createPullRequest.pullRequest' of null`
+      )
+    const id = createPullRequest.pullRequest.id
+
     return new Promise(resolve => {
-      resolve()
+      resolve(id)
     })
   }
 
   async updatePullRequest(
     pullRequestId: string,
     template: Template
-  ): Promise<void> {
+  ): Promise<string> {
     const octokit = github.getOctokit(this.token)
 
     const input: UpdatePullRequestInput = {
       pullRequestId,
       title: template.title(),
-      body: template.checkList()
+      body: template.body()
     }
-    await octokit.graphql({
+    const {updatePullRequest} = await octokit.graphql<{
+      updatePullRequest: UpdatePullRequestPayload
+    }>({
       query: query.updatePullRequest,
       input
     })
 
+    if (updatePullRequest === undefined)
+      throw Error(`Cannot read property 'updatePullRequest' of undefined`)
+    if (updatePullRequest.pullRequest === undefined)
+      throw Error(
+        `Cannot read property 'updatePullRequest.pullRequest' of undefined`
+      )
+    if (updatePullRequest.pullRequest === null)
+      throw Error(
+        `Cannot read property 'updatePullRequest.pullRequest' of null`
+      )
+    const id = updatePullRequest.pullRequest.id
+
     return new Promise(resolve => {
-      resolve()
+      resolve(id)
     })
   }
 

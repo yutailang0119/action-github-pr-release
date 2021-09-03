@@ -21,7 +21,7 @@ export class Template {
     return `Release ${this.date}`
   }
 
-  checkList(): string {
+  body(): string {
     return this.pullRequests.reduce(
       (p: string, pr: PullRequestItem): string => {
         return `${p}- #${pr.number} @${pr.author}\n`
