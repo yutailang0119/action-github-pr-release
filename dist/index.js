@@ -103,12 +103,19 @@ class GitHub {
             body: template.body(),
             draft
         };
-        await octokit.graphql({
+        const { createPullRequest } = await octokit.graphql({
             query: query.createPullRequest,
             input
         });
+        if (createPullRequest === undefined)
+            throw Error(`Cannot read property 'createPullRequest' of undefined`);
+        if (createPullRequest.pullRequest === undefined)
+            throw Error(`Cannot read property 'createPullRequest.pullRequest' of undefined`);
+        if (createPullRequest.pullRequest === null)
+            throw Error(`Cannot read property 'createPullRequest.pullRequest' of null`);
+        const id = createPullRequest.pullRequest.id;
         return new Promise(resolve => {
-            resolve();
+            resolve(id);
         });
     }
     async updatePullRequest(pullRequestId, template) {
@@ -118,12 +125,19 @@ class GitHub {
             title: template.title(),
             body: template.body()
         };
-        await octokit.graphql({
+        const { updatePullRequest } = await octokit.graphql({
             query: query.updatePullRequest,
             input
         });
+        if (updatePullRequest === undefined)
+            throw Error(`Cannot read property 'updatePullRequest' of undefined`);
+        if (updatePullRequest.pullRequest === undefined)
+            throw Error(`Cannot read property 'updatePullRequest.pullRequest' of undefined`);
+        if (updatePullRequest.pullRequest === null)
+            throw Error(`Cannot read property 'updatePullRequest.pullRequest' of null`);
+        const id = updatePullRequest.pullRequest.id;
         return new Promise(resolve => {
-            resolve();
+            resolve(id);
         });
     }
     async compareSHAs(baseRefName, headRefName, perPage) {
@@ -351,14 +365,22 @@ query ($owner: String!, $name: String!, $expression: String!) {
 exports.createPullRequest = `
 mutation ($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `;
 exports.updatePullRequest = `
 mutation ($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `;
