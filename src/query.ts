@@ -55,7 +55,11 @@ mutation ($input: CreatePullRequestInput!) {
 export const updatePullRequest = `
 mutation ($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      ... on PullRequest {
+        id
+      }
+    }
   }
 }
 `
