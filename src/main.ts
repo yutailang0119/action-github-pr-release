@@ -49,25 +49,19 @@ async function run(): Promise<void> {
       core.info(template.title())
       core.info(template.body())
     } else {
-      const pullRequestId = async (pr?: {id: string}): Promise<string> => {
-        if (pr !== undefined) {
-          return new Promise(resolve => {
-            resolve(pr.id)
-          })
-        }
-        const pullRequestId = await gh.createPullRequest(
+      let pullRequestId: string
+      if (repository.pullRequest === undefined) {
+        pullRequestId = await gh.createPullRequest(
           repository.id,
           productionBranch,
           stagingBranch,
           template,
           inputs.isDraft
         )
-        return new Promise(resolve => {
-          resolve(pullRequestId)
-        })
+      } else {
+        pullRequestId = repository.pullRequest.id
       }
-      const prId = await pullRequestId(repository.pullRequest)
-      await gh.updatePullRequest(prId, template)
+      await gh.updatePullRequest(pullRequestId, template)
     }
   } catch (error) {
     core.setFailed(error.message)
