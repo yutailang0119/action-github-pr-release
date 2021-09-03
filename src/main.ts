@@ -33,7 +33,7 @@ async function run(): Promise<void> {
       inputs.label
     )
 
-    if (inputs.label.length !== 0 && repository.labelId === undefined) {
+    if (inputs.label !== undefined && repository.labelId === undefined) {
       core.setFailed(`Not found ${inputs.label}`)
       return
     }

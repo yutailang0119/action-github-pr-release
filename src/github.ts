@@ -29,7 +29,7 @@ export class GitHub {
   async repository(
     baseRefName: string,
     headRefName: string,
-    label: string
+    label?: string
   ): Promise<{id: string; labelId?: string; pullRequest?: {id: string}}> {
     const octokit = github.getOctokit(this.token)
 

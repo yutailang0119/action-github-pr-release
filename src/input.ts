@@ -7,7 +7,7 @@ export function getInputs(): {
   repo: string
   productionBranch: string
   stagingBranch: string
-  label: string
+  label?: string
   isDryRun: boolean
   isDraft: boolean
 } {
@@ -25,7 +25,7 @@ export function getInputs(): {
     repo,
     productionBranch,
     stagingBranch,
-    label,
+    label: label.length !== 0 ? label : undefined,
     isDryRun,
     isDraft
   }
