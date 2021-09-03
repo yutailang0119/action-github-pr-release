@@ -8,6 +8,7 @@ test('test runs', () => {
   process.env['INPUT_PRODUCTION_BRANCH'] =
     process.env.TEST_PRODUCTION_BRANCH ?? ''
   process.env['INPUT_STAGING_BRANCH'] = process.env.TEST_STAGING_BRANCH ?? ''
+  process.env['INPUT_LABEL'] = process.env.TEST_REPOSITORY_LABEL_NAME
   process.env['INPUT_DRY_RUN'] = 'true'
   process.env['INPUT_DRAFT'] = 'true'
   const np = process.execPath
