@@ -1,5 +1,5 @@
 export const repository = `
-query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!, $label: String!) {
+query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!, $label: String = "") {
   repository(owner: $owner, name: $name) {
     ... on Repository {
       id
