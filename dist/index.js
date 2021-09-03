@@ -344,7 +344,7 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updatePullRequest = exports.createPullRequest = exports.associatedPullRequest = exports.repository = void 0;
 exports.repository = `
-query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!, $label: String!) {
+query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: String!, $label: String = "") {
   repository(owner: $owner, name: $name) {
     ... on Repository {
       id
