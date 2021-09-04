@@ -39,7 +39,6 @@ async function run(): Promise<void> {
     }
 
     const template = new Template(
-      undefined,
       pullRequests.flatMap(pr => pr ?? []),
       repository.labelId !== undefined ? [repository.labelId] : undefined
     )
