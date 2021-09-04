@@ -1,28 +1,21 @@
 import {PullRequestItem} from '../src/github'
 
 export class Template {
+  title: string
+  body: string
+  labelIds?: string[]
+
   constructor(
-    private date: Date,
-    private pullRequests: PullRequestItem[],
-    public labelIds?: string[]
+    title?: string,
+    pullRequests: PullRequestItem[] = [],
+    labelIds?: string[]
   ) {
-    this.date = date
-    this.pullRequests = Array.from(
+    this.title = title !== undefined ? title : `Release ${new Date()}`
+    this.body = Array.from(
       new Map(pullRequests.map(pr => [pr.number, pr])).values()
-    )
+    ).reduce((p: string, pr: PullRequestItem): string => {
+      return `${p}- #${pr.number} @${pr.author}\n`
+    }, '')
     this.labelIds = labelIds
-  }
-
-  title(): string {
-    return `Release ${this.date}`
-  }
-
-  body(): string {
-    return this.pullRequests.reduce(
-      (p: string, pr: PullRequestItem): string => {
-        return `${p}- #${pr.number} @${pr.author}\n`
-      },
-      ''
-    )
   }
 }

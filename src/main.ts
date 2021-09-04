@@ -39,15 +39,15 @@ async function run(): Promise<void> {
     }
 
     const template = new Template(
-      new Date(),
+      undefined,
       pullRequests.flatMap(pr => pr ?? []),
       repository.labelId !== undefined ? [repository.labelId] : undefined
     )
 
     if (inputs.isDryRun) {
       core.info('Dry-run. Not mutating Pull Request.')
-      core.info(`title: ${template.title()}`)
-      core.info(`body: ${template.body()}`)
+      core.info(`title: ${template.title}`)
+      core.info(`body: ${template.body}`)
       if (inputs.label !== undefined)
         core.info(`labels: ${inputs.label}: ${template.labelIds?.join(',')}`)
     } else {
