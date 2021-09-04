@@ -104,8 +104,8 @@ export class GitHub {
       repositoryId,
       baseRefName,
       headRefName,
-      title: template.title(),
-      body: template.body(),
+      title: template.title,
+      body: template.body,
       draft
     }
     const {createPullRequest} = await octokit.graphql<{
@@ -140,8 +140,8 @@ export class GitHub {
 
     const input: UpdatePullRequestInput = {
       pullRequestId,
-      title: template.title(),
-      body: template.body(),
+      title: template.title,
+      body: template.body,
       labelIds: template.labelIds
     }
     const {updatePullRequest} = await octokit.graphql<{
