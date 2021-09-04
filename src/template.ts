@@ -10,7 +10,12 @@ export class Template {
     pullRequests: PullRequestItem[] = [],
     labelIds?: string[]
   ) {
-    this.title = title !== undefined ? title : `Release ${new Date()}`
+    if (title !== undefined) {
+      this.title = title
+    } else {
+      const date = new Date()
+      this.title = `Release ${date.toLocaleDateString()}`
+    }
     this.body = Array.from(
       new Map(pullRequests.map(pr => [pr.number, pr])).values()
     ).reduce((p: string, pr: PullRequestItem): string => {
