@@ -10,28 +10,44 @@ This action is inspired by [x-motemen/git-pr-release](https://github.com/x-motem
 
 This action's features is based on [x-motemen/git-pr-release](https://github.com/x-motemen/git-pr-release).
 
-- [ ] Select branchs
+- [x] Select branchs
     - Production branch
     - Staging branch
-- [ ] Use template
+- [ ] Tempalate for title and body
     - [ ] Difference update
 - [ ] Labels
     - [x] Support single label
     - [ ] Support Multiple labels
 - [ ] Replace mention
-- [x] Draft
+- [x] As draft
 - [ ] Support command options
     - [ ] `squash`: Squash and merge
     - [ ] `no-fetch`: Do not fetch from remote repo before determining target PRs
 
-
-## Exaple
-
-TBC
-
 ## Usage
 
-TBC
+An example workflow(.github/workflows/github-pr-release.yml) to executing action follows:
+
+```yml
+name: github-pr-release
+
+on:
+  push:
+    branches:
+    - develop
+
+jobs:
+  github-pr-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: yutailang0119/action-github-pr-release@v1
+        with:
+          token: ${{ github.token }}
+          production_branch: main
+          staging_branch: develop
+          label: Release
+```
 
 ## Author
 
