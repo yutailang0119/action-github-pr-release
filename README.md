@@ -10,16 +10,16 @@ This action is inspired by [x-motemen/git-pr-release](https://github.com/x-motem
 
 This action's features is based on [x-motemen/git-pr-release](https://github.com/x-motemen/git-pr-release).
 
-- [ ] Select branchs
+- [x] Select branchs
     - Production branch
     - Staging branch
-- [ ] Use template
+- [ ] Tempalate for title and body
     - [ ] Difference update
 - [ ] Labels
     - [x] Support single label
     - [ ] Support Multiple labels
 - [ ] Replace mention
-- [x] Draft
+- [x] As draft
 - [ ] Support command options
     - [ ] `squash`: Squash and merge
     - [ ] `no-fetch`: Do not fetch from remote repo before determining target PRs
