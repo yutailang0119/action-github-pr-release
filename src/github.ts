@@ -22,11 +22,11 @@ export class GitHub {
     private name: string
   ) {}
 
-  async repository(
+  repository = async (
     baseRefName: string,
     headRefName: string,
     label?: string
-  ): Promise<{id: string; labelId?: string; pullRequest?: {id: string}}> {
+  ): Promise<{id: string; labelId?: string; pullRequest?: {id: string}}> => {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
@@ -61,9 +61,9 @@ export class GitHub {
     })
   }
 
-  async associatedPullRequest(
+  associatedPullRequest = async (
     expression: string
-  ): Promise<PullRequestItem | undefined> {
+  ): Promise<PullRequestItem | undefined> => {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
@@ -91,13 +91,13 @@ export class GitHub {
     })
   }
 
-  async createPullRequest(
+  createPullRequest = async (
     repositoryId: string,
     baseRefName: string,
     headRefName: string,
     template: Template,
     draft: boolean
-  ): Promise<string> {
+  ): Promise<string> => {
     const octokit = github.getOctokit(this.token)
 
     const input: CreatePullRequestInput = {
@@ -132,10 +132,10 @@ export class GitHub {
     })
   }
 
-  async updatePullRequest(
+  updatePullRequest = async (
     pullRequestId: string,
     template: Template
-  ): Promise<string> {
+  ): Promise<string> => {
     const octokit = github.getOctokit(this.token)
 
     const input: UpdatePullRequestInput = {
@@ -168,11 +168,11 @@ export class GitHub {
     })
   }
 
-  async compareSHAs(
+  compareSHAs = async (
     baseRefName: string,
     headRefName: string,
     perPage?: number
-  ): Promise<string[]> {
+  ): Promise<string[]> => {
     const octokit = github.getOctokit(this.token)
 
     let page: number | undefined = undefined
