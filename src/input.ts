@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-export function getInputs(): {
+export const getInputs = (): {
   token: string
   owner: string
   repo: string
@@ -10,7 +10,7 @@ export function getInputs(): {
   label?: string
   isDraft: boolean
   isDryRun: boolean
-} {
+} => {
   const {owner, repo} = repository()
   const token = core.getInput('token', {required: true})
   const productionBranch = core.getInput('production_branch')
@@ -31,7 +31,7 @@ export function getInputs(): {
   }
 }
 
-function repository(): {owner: string; repo: string} {
+const repository = (): {owner: string; repo: string} => {
   if (core.getInput('repository')) {
     const [owner, repo] = core.getInput('repository').split('/')
     return {owner, repo}
