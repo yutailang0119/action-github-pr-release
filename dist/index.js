@@ -34,161 +34,161 @@ class GitHub {
         this.token = token;
         this.owner = owner;
         this.name = name;
-        this.repository = async (baseRefName, headRefName, label) => {
-            const octokit = github.getOctokit(this.token);
-            const { repository } = await octokit.graphql({
-                query: query.repository,
-                owner: this.owner,
-                name: this.name,
-                baseRefName,
-                headRefName,
-                label
-            });
-            const pullRequest = () => {
-                var _a, _b, _c;
-                if (repository.pullRequests.edges === undefined)
-                    return undefined;
-                if (repository.pullRequests.edges === null)
-                    return undefined;
-                if (repository.pullRequests.edges.length === 0)
-                    return undefined;
-                if (((_b = (_a = repository.pullRequests.edges[0]) === null || _a === void 0 ? void 0 : _a.node) === null || _b === void 0 ? void 0 : _b.id) === undefined)
-                    return undefined;
-                if (((_c = repository.pullRequests.edges[0]) === null || _c === void 0 ? void 0 : _c.node.id) === null)
-                    return undefined;
-                return { id: repository.pullRequests.edges[0].node.id };
-            };
-            const labelId = () => {
-                if (repository.label === undefined)
-                    return undefined;
-                if (repository.label === null)
-                    return undefined;
-                return repository.label.id;
-            };
-            return new Promise(resolve => {
-                resolve({
-                    id: repository.id,
-                    labelId: labelId(),
-                    pullRequest: pullRequest()
-                });
-            });
-        };
-        this.associatedPullRequest = async (expression) => {
+    }
+    async repository(baseRefName, headRefName, label) {
+        const octokit = github.getOctokit(this.token);
+        const { repository } = await octokit.graphql({
+            query: query.repository,
+            owner: this.owner,
+            name: this.name,
+            baseRefName,
+            headRefName,
+            label
+        });
+        const pullRequest = () => {
             var _a, _b, _c;
-            const octokit = github.getOctokit(this.token);
-            const { repository } = await octokit.graphql({
-                query: query.associatedPullRequest,
-                owner: this.owner,
-                name: this.name,
-                expression
-            });
-            const commit = repository.object;
-            if (((_a = commit.associatedPullRequests) === null || _a === void 0 ? void 0 : _a.edges) === undefined)
+            if (repository.pullRequests.edges === undefined)
                 return undefined;
-            if (commit.associatedPullRequests.edges === null)
+            if (repository.pullRequests.edges === null)
                 return undefined;
-            if (commit.associatedPullRequests.edges.length === 0)
+            if (repository.pullRequests.edges.length === 0)
                 return undefined;
-            if (((_c = (_b = commit.associatedPullRequests.edges[0]) === null || _b === void 0 ? void 0 : _b.node) === null || _c === void 0 ? void 0 : _c.author) === undefined)
+            if (((_b = (_a = repository.pullRequests.edges[0]) === null || _a === void 0 ? void 0 : _a.node) === null || _b === void 0 ? void 0 : _b.id) === undefined)
                 return undefined;
-            if (commit.associatedPullRequests.edges[0].node.author === null)
+            if (((_c = repository.pullRequests.edges[0]) === null || _c === void 0 ? void 0 : _c.node.id) === null)
                 return undefined;
-            const pr = {
-                number: commit.associatedPullRequests.edges[0].node.number,
-                author: commit.associatedPullRequests.edges[0].node.author.login
-            };
-            return new Promise(resolve => {
-                resolve(pr);
-            });
+            return { id: repository.pullRequests.edges[0].node.id };
         };
-        this.createPullRequest = async (repositoryId, baseRefName, headRefName, template, draft) => {
-            const octokit = github.getOctokit(this.token);
-            const input = {
-                repositoryId,
-                baseRefName,
-                headRefName,
-                title: template.title(),
-                body: template.body(),
-                draft
-            };
-            const { createPullRequest } = await octokit.graphql({
-                query: query.createPullRequest,
-                input
-            });
-            if (createPullRequest === undefined)
-                throw Error(`Cannot read property 'createPullRequest' of undefined`);
-            if (createPullRequest.pullRequest === undefined)
-                throw Error(`Cannot read property 'createPullRequest.pullRequest' of undefined`);
-            if (createPullRequest.pullRequest === null)
-                throw Error(`Cannot read property 'createPullRequest.pullRequest' of null`);
-            const id = createPullRequest.pullRequest.id;
-            return new Promise(resolve => {
-                resolve(id);
-            });
+        const labelId = () => {
+            if (repository.label === undefined)
+                return undefined;
+            if (repository.label === null)
+                return undefined;
+            return repository.label.id;
         };
-        this.updatePullRequest = async (pullRequestId, template) => {
-            const octokit = github.getOctokit(this.token);
-            const input = {
-                pullRequestId,
-                title: template.title(),
-                body: template.body(),
-                labelIds: template.labelIds
-            };
-            const { updatePullRequest } = await octokit.graphql({
-                query: query.updatePullRequest,
-                input
+        return new Promise(resolve => {
+            resolve({
+                id: repository.id,
+                labelId: labelId(),
+                pullRequest: pullRequest()
             });
-            if (updatePullRequest === undefined)
-                throw Error(`Cannot read property 'updatePullRequest' of undefined`);
-            if (updatePullRequest.pullRequest === undefined)
-                throw Error(`Cannot read property 'updatePullRequest.pullRequest' of undefined`);
-            if (updatePullRequest.pullRequest === null)
-                throw Error(`Cannot read property 'updatePullRequest.pullRequest' of null`);
-            const id = updatePullRequest.pullRequest.id;
-            return new Promise(resolve => {
-                resolve(id);
-            });
+        });
+    }
+    async associatedPullRequest(expression) {
+        var _a, _b, _c;
+        const octokit = github.getOctokit(this.token);
+        const { repository } = await octokit.graphql({
+            query: query.associatedPullRequest,
+            owner: this.owner,
+            name: this.name,
+            expression
+        });
+        const commit = repository.object;
+        if (((_a = commit.associatedPullRequests) === null || _a === void 0 ? void 0 : _a.edges) === undefined)
+            return undefined;
+        if (commit.associatedPullRequests.edges === null)
+            return undefined;
+        if (commit.associatedPullRequests.edges.length === 0)
+            return undefined;
+        if (((_c = (_b = commit.associatedPullRequests.edges[0]) === null || _b === void 0 ? void 0 : _b.node) === null || _c === void 0 ? void 0 : _c.author) === undefined)
+            return undefined;
+        if (commit.associatedPullRequests.edges[0].node.author === null)
+            return undefined;
+        const pr = {
+            number: commit.associatedPullRequests.edges[0].node.number,
+            author: commit.associatedPullRequests.edges[0].node.author.login
         };
-        this.compareSHAs = async (baseRefName, headRefName, perPage) => {
-            const octokit = github.getOctokit(this.token);
-            let page = undefined;
-            const shas = [];
-            while (!Number.isNaN(page)) {
-                let response;
-                try {
-                    // https://docs.github.com/en/rest/reference/repos#compare-two-commits
-                    response = await octokit.rest.repos.compareCommits({
-                        owner: this.owner,
-                        repo: this.name,
-                        base: baseRefName,
-                        head: headRefName,
-                        per_page: perPage !== null && perPage !== void 0 ? perPage : 100,
-                        page
-                    });
-                }
-                catch (error) {
-                    throw error;
-                }
-                for (const commit of response.data.commits) {
-                    shas.push(commit.sha);
-                }
-                // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
-                const next = ((response.headers.link || '').match(/<([^>]+)>;\s*rel="next"/) || [])[1];
-                if (next === undefined) {
-                    page = NaN;
-                    continue;
-                }
-                const p = new URL(next).searchParams.get('page');
-                if (p === null) {
-                    page = NaN;
-                    continue;
-                }
-                page = Number(p);
+        return new Promise(resolve => {
+            resolve(pr);
+        });
+    }
+    async createPullRequest(repositoryId, baseRefName, headRefName, template, draft) {
+        const octokit = github.getOctokit(this.token);
+        const input = {
+            repositoryId,
+            baseRefName,
+            headRefName,
+            title: template.title,
+            body: template.body,
+            draft
+        };
+        const { createPullRequest } = await octokit.graphql({
+            query: query.createPullRequest,
+            input
+        });
+        if (createPullRequest === undefined)
+            throw Error(`Cannot read property 'createPullRequest' of undefined`);
+        if (createPullRequest.pullRequest === undefined)
+            throw Error(`Cannot read property 'createPullRequest.pullRequest' of undefined`);
+        if (createPullRequest.pullRequest === null)
+            throw Error(`Cannot read property 'createPullRequest.pullRequest' of null`);
+        const id = createPullRequest.pullRequest.id;
+        return new Promise(resolve => {
+            resolve(id);
+        });
+    }
+    async updatePullRequest(pullRequestId, template) {
+        const octokit = github.getOctokit(this.token);
+        const input = {
+            pullRequestId,
+            title: template.title,
+            body: template.body,
+            labelIds: template.labelIds
+        };
+        const { updatePullRequest } = await octokit.graphql({
+            query: query.updatePullRequest,
+            input
+        });
+        if (updatePullRequest === undefined)
+            throw Error(`Cannot read property 'updatePullRequest' of undefined`);
+        if (updatePullRequest.pullRequest === undefined)
+            throw Error(`Cannot read property 'updatePullRequest.pullRequest' of undefined`);
+        if (updatePullRequest.pullRequest === null)
+            throw Error(`Cannot read property 'updatePullRequest.pullRequest' of null`);
+        const id = updatePullRequest.pullRequest.id;
+        return new Promise(resolve => {
+            resolve(id);
+        });
+    }
+    async compareSHAs(baseRefName, headRefName, perPage) {
+        const octokit = github.getOctokit(this.token);
+        let page = undefined;
+        const shas = [];
+        while (!Number.isNaN(page)) {
+            let response;
+            try {
+                // https://docs.github.com/en/rest/reference/repos#compare-two-commits
+                response = await octokit.rest.repos.compareCommits({
+                    owner: this.owner,
+                    repo: this.name,
+                    base: baseRefName,
+                    head: headRefName,
+                    per_page: perPage !== null && perPage !== void 0 ? perPage : 100,
+                    page
+                });
             }
-            return new Promise(resolve => {
-                resolve(shas);
-            });
-        };
+            catch (error) {
+                throw error;
+            }
+            for (const commit of response.data.commits) {
+                shas.push(commit.sha);
+            }
+            // https://github.com/octokit/plugin-paginate-rest.js/blob/597472cb40bc312ae3b1f37892332875e1233b5b/src/iterator.ts#L33-L38
+            const next = ((response.headers.link || '').match(/<([^>]+)>;\s*rel="next"/) || [])[1];
+            if (next === undefined) {
+                page = NaN;
+                continue;
+            }
+            const p = new URL(next).searchParams.get('page');
+            if (p === null) {
+                page = NaN;
+                continue;
+            }
+            page = Number(p);
+        }
+        return new Promise(resolve => {
+            resolve(shas);
+        });
     }
 }
 exports.GitHub = GitHub;
@@ -308,11 +308,11 @@ async function run() {
             core.setFailed(`Not found ${inputs.label}`);
             return;
         }
-        const template = new template_1.Template(new Date(), pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []), repository.labelId !== undefined ? [repository.labelId] : undefined);
+        const template = new template_1.Template(pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []), repository.labelId !== undefined ? [repository.labelId] : undefined);
         if (inputs.isDryRun) {
             core.info('Dry-run. Not mutating Pull Request.');
-            core.info(`title: ${template.title()}`);
-            core.info(`body: ${template.body()}`);
+            core.info(`title: ${template.title}`);
+            core.info(`body: ${template.body}`);
             if (inputs.label !== undefined)
                 core.info(`labels: ${inputs.label}: ${(_a = template.labelIds) === null || _a === void 0 ? void 0 : _a.join(',')}`);
         }
@@ -420,20 +420,12 @@ mutation ($input: UpdatePullRequestInput!) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Template = void 0;
 class Template {
-    constructor(date, pullRequests, labelIds) {
-        this.date = date;
-        this.pullRequests = pullRequests;
-        this.labelIds = labelIds;
-        this.title = () => {
-            return `Release ${this.date}`;
-        };
-        this.body = () => {
-            return this.pullRequests.reduce((p, pr) => {
-                return `${p}- #${pr.number} @${pr.author}\n`;
-            }, '');
-        };
-        this.date = date;
-        this.pullRequests = Array.from(new Map(pullRequests.map(pr => [pr.number, pr])).values());
+    constructor(pullRequests = [], labelIds) {
+        const date = new Date();
+        this.title = `Release ${date.toLocaleDateString()}`;
+        this.body = Array.from(new Map(pullRequests.map(pr => [pr.number, pr])).values()).reduce((p, pr) => {
+            return `${p}- #${pr.number} @${pr.author}\n`;
+        }, '');
         this.labelIds = labelIds;
     }
 }
