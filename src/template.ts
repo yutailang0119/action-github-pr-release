@@ -1,14 +1,10 @@
 import {PullRequestItem} from '../src/github'
 
 export class Template {
-  private date: Date
-  private pullRequests: PullRequestItem[]
-  labelIds?: string[]
-
   constructor(
-    date: Date,
-    pullRequests: PullRequestItem[],
-    labelIds?: string[]
+    private date: Date,
+    private pullRequests: PullRequestItem[],
+    public labelIds?: string[]
   ) {
     this.date = date
     this.pullRequests = Array.from(

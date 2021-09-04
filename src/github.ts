@@ -16,15 +16,11 @@ export type PullRequestItem = {
 }
 
 export class GitHub {
-  private token: string
-  private owner: string
-  private name: string
-
-  constructor(token: string, owner: string, name: string) {
-    this.token = token
-    this.owner = owner
-    this.name = name
-  }
+  constructor(
+    private token: string,
+    private owner: string,
+    private name: string
+  ) {}
 
   async repository(
     baseRefName: string,
