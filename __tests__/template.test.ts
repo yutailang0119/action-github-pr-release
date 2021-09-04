@@ -1,9 +1,8 @@
 import {Template} from '../src/template'
 
 test('title', () => {
-  const date = new Date()
-  const template = new Template(date, [])
-  expect(template.title()).toEqual(`Release ${date}`)
+  const template = new Template()
+  expect(template.title).toEqual(`Release ${new Date().toLocaleDateString()}`)
 })
 
 test('body', () => {
@@ -13,6 +12,6 @@ test('body', () => {
     {number: 456, author: 'y7g'},
     {number: 123, author: 'yutailang0119'}
   ]
-  const template = new Template(date, pullRequests)
-  expect(template.body()).toEqual(`- #123 @yutailang0119\n- #456 @y7g\n`)
+  const template = new Template(pullRequests)
+  expect(template.body).toEqual(`- #123 @yutailang0119\n- #456 @y7g\n`)
 })
