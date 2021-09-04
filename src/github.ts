@@ -28,8 +28,9 @@ export class GitHub {
 
   async repository(
     baseRefName: string,
-    headRefName: string
-  ): Promise<{id: string; pullRequest?: {id: string}}> {
+    headRefName: string,
+    label?: string
+  ): Promise<{id: string; labelId?: string; pullRequest?: {id: string}}> {
     const octokit = github.getOctokit(this.token)
 
     const {repository} = await octokit.graphql<{repository: Repository}>({
@@ -37,7 +38,8 @@ export class GitHub {
       owner: this.owner,
       name: this.name,
       baseRefName,
-      headRefName
+      headRefName,
+      label
     })
     const pullRequest = (): {id: string} | undefined => {
       if (repository.pullRequests.edges === undefined) return undefined
@@ -48,10 +50,16 @@ export class GitHub {
       if (repository.pullRequests.edges[0]?.node.id === null) return undefined
       return {id: repository.pullRequests.edges[0].node.id}
     }
+    const labelId = (): string | undefined => {
+      if (repository.label === undefined) return undefined
+      if (repository.label === null) return undefined
+      return repository.label.id
+    }
 
     return new Promise(resolve => {
       resolve({
         id: repository.id,
+        labelId: labelId(),
         pullRequest: pullRequest()
       })
     })
@@ -137,7 +145,8 @@ export class GitHub {
     const input: UpdatePullRequestInput = {
       pullRequestId,
       title: template.title(),
-      body: template.body()
+      body: template.body(),
+      labelIds: template.labelIds
     }
     const {updatePullRequest} = await octokit.graphql<{
       updatePullRequest: UpdatePullRequestPayload

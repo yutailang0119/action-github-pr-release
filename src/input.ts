@@ -1,21 +1,21 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-export type Inputs = {
+export function getInputs(): {
   token: string
   owner: string
   repo: string
   productionBranch: string
   stagingBranch: string
+  label?: string
   isDryRun: boolean
   isDraft: boolean
-}
-
-export function getInputs(): Inputs {
+} {
   const {owner, repo} = repository()
   const token = core.getInput('token', {required: true})
   const productionBranch = core.getInput('production_branch')
   const stagingBranch = core.getInput('staging_branch')
+  const label = core.getInput('label')
   const isDryRun = core.getBooleanInput('dry_run')
   const isDraft = core.getBooleanInput('draft')
 
@@ -25,6 +25,7 @@ export function getInputs(): Inputs {
     repo,
     productionBranch,
     stagingBranch,
+    label: label.length !== 0 ? label : undefined,
     isDryRun,
     isDraft
   }

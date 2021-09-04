@@ -27,19 +27,33 @@ async function run(): Promise<void> {
       return
     }
 
+    const repository = await gh.repository(
+      productionBranch,
+      stagingBranch,
+      inputs.label
+    )
+
+    if (inputs.label !== undefined && repository.labelId === undefined) {
+      core.setFailed(`Not found ${inputs.label}`)
+      return
+    }
+
     const template = new Template(
       new Date(),
-      pullRequests.flatMap(pr => pr ?? [])
+      pullRequests.flatMap(pr => pr ?? []),
+      repository.labelId !== undefined ? [repository.labelId] : undefined
     )
 
     if (inputs.isDryRun) {
       core.info('Dry-run. Not mutating Pull Request.')
       core.info(template.title())
       core.info(template.body())
+      if (inputs.label !== undefined)
+        core.info(`${inputs.label}: ${template.labelIds?.join(',')}`)
     } else {
-      const repository = await gh.repository(productionBranch, stagingBranch)
+      let pullRequestId: string
       if (repository.pullRequest === undefined) {
-        await gh.createPullRequest(
+        pullRequestId = await gh.createPullRequest(
           repository.id,
           productionBranch,
           stagingBranch,
@@ -47,8 +61,9 @@ async function run(): Promise<void> {
           inputs.isDraft
         )
       } else {
-        await gh.updatePullRequest(repository.pullRequest.id, template)
+        pullRequestId = repository.pullRequest.id
       }
+      await gh.updatePullRequest(pullRequestId, template)
     }
   } catch (error) {
     core.setFailed(error.message)
