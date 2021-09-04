@@ -24,14 +24,30 @@ This action's features is based on [x-motemen/git-pr-release](https://github.com
     - [ ] `squash`: Squash and merge
     - [ ] `no-fetch`: Do not fetch from remote repo before determining target PRs
 
-
-## Exaple
-
-TBC
-
 ## Usage
 
-TBC
+An example workflow(.github/workflows/github-pr-release.yml) to executing action follows:
+
+```yml
+name: github-pr-release
+
+on:
+  push:
+    branches:
+    - develop
+
+jobs:
+  github-pr-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: yutailang0119/action-github-pr-release@v1
+        with:
+          token: ${{ github.token }}
+          production_branch: main
+          staging_branch: develop
+          label: Release
+```
 
 ## Author
 
