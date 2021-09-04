@@ -7,7 +7,6 @@ export const getInputs = (): {
   repo: string
   productionBranch: string
   stagingBranch: string
-  title?: string
   label?: string
   isDraft: boolean
   isDryRun: boolean
@@ -16,7 +15,6 @@ export const getInputs = (): {
   const token = core.getInput('token', {required: true})
   const productionBranch = core.getInput('production_branch')
   const stagingBranch = core.getInput('staging_branch')
-  const title = core.getInput('title')
   const label = core.getInput('label')
   const isDraft = core.getBooleanInput('draft')
   const isDryRun = core.getBooleanInput('dry_run')
@@ -27,7 +25,6 @@ export const getInputs = (): {
     repo,
     productionBranch,
     stagingBranch,
-    title: title.length !==0 ? title : undefined,
     label: label.length !== 0 ? label : undefined,
     isDraft,
     isDryRun
