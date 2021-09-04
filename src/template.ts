@@ -13,11 +13,11 @@ export class Template {
     this.labelIds = labelIds
   }
 
-  title = (): string => {
+  title(): string {
     return `Release ${this.date}`
   }
 
-  body = (): string => {
+  body(): string {
     return this.pullRequests.reduce(
       (p: string, pr: PullRequestItem): string => {
         return `${p}- #${pr.number} @${pr.author}\n`
