@@ -6,7 +6,7 @@ query ($owner: String!, $name: String!, $baseRefName: String!, $headRefName: Str
       label(name: $label) {
         id
       }
-      pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+      pullRequests(baseRefName: $baseRefName, headRefName: $headRefName, states: OPEN, first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
         edges {
           node {
             ... on PullRequest {
@@ -25,7 +25,7 @@ query ($owner: String!, $name: String!, $expression: String!) {
   repository(owner: $owner, name: $name) {
     object(expression: $expression) {
       ... on Commit {
-        associatedPullRequests(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+        associatedPullRequests(first: 1, orderBy: {field: UPDATED_AT, direction: ASC}) {
           edges {
             node {
               ... on PullRequest {
