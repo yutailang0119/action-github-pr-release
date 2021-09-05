@@ -14,12 +14,12 @@ inputs:
     description: 'The branch name that the feature branches are merged into and is going to be merged into the "production" branch.'
     default: 'develop'
   label:
-    description: 'Label for adding to pull requests created. If not specified, any labels will not be added for PRs.'
+    description: 'Label for adding to pull requests created. If not specified, any labels will not be added for pull requests.'
   draft:
     description: 'Create a pull request as a draft.'
     default: false
   dry_run:
-    description: 'Do not create/update a PR. Just prints out.'
+    description: 'Do not create/update a pull request. Just prints out.'
     default: false
 runs:
   using: 'node12'
