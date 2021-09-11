@@ -27,3 +27,14 @@ jobs:
           TEST_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_ASSOCIATED_COMMIT_SHA }}
           TEST_ASSOCIATED_PULL_REQUEST_NUMBER: ${{ secrets.TEST_GITHUB_ASSOCIATED_PULL_REQUEST_NUMBER }}
           TEST_NOT_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_NOT_ASSOCIATED_COMMIT_SHA }}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          token: ${{ github.token }}
+          production_branch: ${{ secrets.TEST_GITHUB_PRODUCTION_BRANCH }}
+          staging_branch: ${{ secrets.TEST_GITHUB_STAGING_BRANCH }}
+          label: ${{ secrets.TEST_GITHUB_REPOSITORY_LABEL_NAME }}
+          dry_run: true
