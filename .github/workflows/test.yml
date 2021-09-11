@@ -6,32 +6,24 @@ on:
       - main
 
 jobs:
-  test_ci:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: install
-      run: |
-        npm install
-    - name: lint
-      run: |
-        npm run lint
-    - name: build
-      run: |
-        npm run build
-    - name: test
-      run: |
-        npm run test
-      env:
-        TEST_TOKEN: ${{ github.token }}
-        TEST_REPOSITORY: ${{ github.repository }}
-        TEST_PRODUCTION_BRANCH: ${{ secrets.TEST_GITHUB_PRODUCTION_BRANCH }}
-        TEST_STAGING_BRANCH: ${{ secrets.TEST_GITHUB_STAGING_BRANCH }}
-        TEST_EMPTY_BRANCH: ${{ secrets.TEST_GITHUB_EMPTY_BRANCH }}
-        TEST_REPOSITORY_ID: ${{ secrets.TEST_GITHUB_REPOSITORY_ID }}
-        TEST_EXISTING_PULL_REQUEST_ID: ${{ secrets.TEST_GITHUB_EXISTING_PULL_REQUEST_ID }}
-        TEST_REPOSITORY_LABEL_NAME: ${{ secrets.TEST_GITHUB_REPOSITORY_LABEL_NAME }}
-        TEST_REPOSITORY_LABEL_ID: ${{ secrets.TEST_GITHUB_REPOSITORY_LABEL_ID }}
-        TEST_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_ASSOCIATED_COMMIT_SHA }}
-        TEST_ASSOCIATED_PULL_REQUEST_NUMBER: ${{ secrets.TEST_GITHUB_ASSOCIATED_PULL_REQUEST_NUMBER }}
-        TEST_NOT_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_NOT_ASSOCIATED_COMMIT_SHA }}
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+        env:
+          TEST_TOKEN: ${{ github.token }}
+          TEST_REPOSITORY: ${{ github.repository }}
+          TEST_PRODUCTION_BRANCH: ${{ secrets.TEST_GITHUB_PRODUCTION_BRANCH }}
+          TEST_STAGING_BRANCH: ${{ secrets.TEST_GITHUB_STAGING_BRANCH }}
+          TEST_EMPTY_BRANCH: ${{ secrets.TEST_GITHUB_EMPTY_BRANCH }}
+          TEST_REPOSITORY_ID: ${{ secrets.TEST_GITHUB_REPOSITORY_ID }}
+          TEST_EXISTING_PULL_REQUEST_ID: ${{ secrets.TEST_GITHUB_EXISTING_PULL_REQUEST_ID }}
+          TEST_REPOSITORY_LABEL_NAME: ${{ secrets.TEST_GITHUB_REPOSITORY_LABEL_NAME }}
+          TEST_REPOSITORY_LABEL_ID: ${{ secrets.TEST_GITHUB_REPOSITORY_LABEL_ID }}
+          TEST_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_ASSOCIATED_COMMIT_SHA }}
+          TEST_ASSOCIATED_PULL_REQUEST_NUMBER: ${{ secrets.TEST_GITHUB_ASSOCIATED_PULL_REQUEST_NUMBER }}
+          TEST_NOT_ASSOCIATED_COMMIT_SHA: ${{ secrets.TEST_GITHUB_NOT_ASSOCIATED_COMMIT_SHA }}
