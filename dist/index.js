@@ -285,7 +285,6 @@ const input_1 = __nccwpck_require__(657);
 const github_1 = __nccwpck_require__(928);
 const template_1 = __nccwpck_require__(32);
 async function run() {
-    var _a;
     try {
         const inputs = input_1.getInputs();
         const productionBranch = inputs.productionBranch;
@@ -314,7 +313,7 @@ async function run() {
             core.info(`title: ${template.title}`);
             core.info(`body: ${template.body}`);
             if (inputs.label !== undefined)
-                core.info(`labels: ${inputs.label}: ${(_a = template.labelIds) === null || _a === void 0 ? void 0 : _a.join(',')}`);
+                core.info(`labels: ${inputs.label}: ${template.labelIds}`);
         }
         else {
             let pullRequestId;
@@ -423,8 +422,14 @@ class Template {
     constructor(pullRequests = [], labelIds) {
         const date = new Date();
         this.title = `Release ${date.toLocaleDateString()}`;
-        this.body = Array.from(new Map(pullRequests.map(pr => [pr.number, pr])).values()).reduce((p, pr) => {
-            return `${p}- #${pr.number} @${pr.author}\n`;
+        this.body = Array.from(new Map(pullRequests.map(pr => [pr.number, pr])).values())
+            .sort((lhs, rhs) => {
+            if (lhs.number === rhs.number)
+                return 0;
+            return lhs.number > rhs.number ? 1 : -1;
+        })
+            .reduce((previous, pr) => {
+            return `${previous}- #${pr.number} @${pr.author}\n`;
         }, '');
         this.labelIds = labelIds;
     }
