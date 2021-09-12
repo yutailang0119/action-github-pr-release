@@ -48,7 +48,7 @@ async function run(): Promise<void> {
       core.info(`title: ${template.title}`)
       core.info(`body: ${template.body}`)
       if (inputs.label !== undefined)
-        core.info(`labels: ${inputs.label}: ${template.labelIds?.join(',')}`)
+        core.info(`labels: ${inputs.label}: ${template.labelIds}`)
     } else {
       let pullRequestId: string
       if (repository.pullRequest === undefined) {
