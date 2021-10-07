@@ -30,6 +30,7 @@ query ($owner: String!, $name: String!, $expression: String!) {
             node {
               ... on PullRequest {
                 number
+                state
                 author {
                   login
                 }
