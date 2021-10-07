@@ -82,6 +82,9 @@ export class GitHub {
     if (commit.associatedPullRequests.edges[0].node.author === null)
       return undefined
 
+    if (commit.associatedPullRequests.edges[0].node.state !== 'MERGED')
+      return undefined
+
     const pr: PullRequestItem = {
       number: commit.associatedPullRequests.edges[0].node.number,
       author: commit.associatedPullRequests.edges[0].node.author.login
