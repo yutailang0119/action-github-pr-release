@@ -94,6 +94,8 @@ class GitHub {
             return undefined;
         if (commit.associatedPullRequests.edges[0].node.author === null)
             return undefined;
+        if (commit.associatedPullRequests.edges[0].node.state !== 'MERGED')
+            return undefined;
         const pr = {
             number: commit.associatedPullRequests.edges[0].node.number,
             author: commit.associatedPullRequests.edges[0].node.author.login
@@ -373,6 +375,7 @@ query ($owner: String!, $name: String!, $expression: String!) {
             node {
               ... on PullRequest {
                 number
+                state
                 author {
                   login
                 }
