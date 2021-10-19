@@ -286,7 +286,7 @@ const github_1 = __nccwpck_require__(928);
 const template_1 = __nccwpck_require__(32);
 async function run() {
     try {
-        const inputs = input_1.getInputs();
+        const inputs = (0, input_1.getInputs)();
         const productionBranch = inputs.productionBranch;
         const stagingBranch = inputs.stagingBranch;
         const gh = new github_1.GitHub(inputs.token, inputs.owner, inputs.repo);
@@ -327,7 +327,8 @@ async function run() {
         }
     }
     catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error)
+            core.setFailed(error.message);
     }
 }
 run();
