@@ -65,7 +65,7 @@ async function run(): Promise<void> {
       await gh.updatePullRequest(pullRequestId, template)
     }
   } catch (error) {
-    core.setFailed(error.message)
+    if (error instanceof Error) core.setFailed(error.message)
   }
 }
 
