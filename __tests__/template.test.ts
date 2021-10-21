@@ -1,3 +1,4 @@
+import {expect, test} from '@jest/globals'
 import {Template} from '../src/template'
 
 test('title', () => {
