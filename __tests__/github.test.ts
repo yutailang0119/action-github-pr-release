@@ -1,4 +1,5 @@
 import * as process from 'process'
+import {expect, test} from '@jest/globals'
 import {GitHub} from '../src/github'
 
 test('repository', async () => {

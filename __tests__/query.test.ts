@@ -1,4 +1,5 @@
 import {validate} from '@octokit/graphql-schema'
+import {test} from '@jest/globals'
 import * as query from '../src/query'
 
 test('validate repository', () => {
