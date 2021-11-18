@@ -44,8 +44,8 @@ jobs:
       - uses: yutailang0119/action-github-pr-release@v1
         with:
           token: ${{ github.token }}
-          production_branch: main
-          staging_branch: develop
+          production-branch: main
+          staging-branch: develop
           label: Release
 ```
 

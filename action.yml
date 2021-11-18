@@ -7,10 +7,10 @@ inputs:
     required: true
   repository:
     description: 'The owner and repository name. For example, octocat/Hello-World.'
-  production_branch:
+  production-branch:
     description: 'The branch name that is deployed in production environment.'
     default: 'main'
-  staging_branch:
+  staging-branch:
     description: 'The branch name that the feature branches are merged into and is going to be merged into the "production" branch.'
     default: 'develop'
   label:
@@ -18,7 +18,7 @@ inputs:
   draft:
     description: 'Create a pull request as a draft.'
     default: false
-  dry_run:
+  dry-run:
     description: 'Do not create/update a pull request. Just prints out.'
     default: false
 runs:
