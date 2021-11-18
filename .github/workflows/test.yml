@@ -34,7 +34,7 @@ jobs:
       - uses: ./
         with:
           token: ${{ github.token }}
-          production_branch: ${{ secrets.TEST_GITHUB_PRODUCTION_BRANCH }}
-          staging_branch: ${{ secrets.TEST_GITHUB_STAGING_BRANCH }}
+          production-branch: ${{ secrets.TEST_GITHUB_PRODUCTION_BRANCH }}
+          staging-branch: ${{ secrets.TEST_GITHUB_STAGING_BRANCH }}
           label: ${{ secrets.TEST_GITHUB_REPOSITORY_LABEL_NAME }}
-          dry_run: true
+          dry-run: true

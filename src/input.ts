@@ -13,11 +13,11 @@ export const getInputs = (): {
 } => {
   const {owner, repo} = repository()
   const token = core.getInput('token', {required: true})
-  const productionBranch = core.getInput('production_branch')
-  const stagingBranch = core.getInput('staging_branch')
+  const productionBranch = core.getInput('production-branch')
+  const stagingBranch = core.getInput('staging-branch')
   const label = core.getInput('label')
   const isDraft = core.getBooleanInput('draft')
-  const isDryRun = core.getBooleanInput('dry_run')
+  const isDryRun = core.getBooleanInput('dry-run')
 
   return {
     token,
