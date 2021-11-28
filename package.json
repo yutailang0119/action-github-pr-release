@@ -1,8 +1,8 @@
 {
   "name": "action-github-pr-release",
   "version": "2.0.0",
-  "private": true,
-  "description": "GitHub Action to create a 'release pull request'",
+  "private": false,
+  "description": "GitHub Actions to create a 'release pull request'",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
