@@ -22,7 +22,7 @@ inputs:
     description: 'Do not create/update a pull request. Just prints out.'
     default: false
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 branding:
   icon: 'git-pull-request'
