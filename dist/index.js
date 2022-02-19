@@ -46,16 +46,15 @@ class GitHub {
             label
         });
         const pullRequest = () => {
-            var _a, _b, _c;
             if (repository.pullRequests.edges === undefined)
                 return undefined;
             if (repository.pullRequests.edges === null)
                 return undefined;
             if (repository.pullRequests.edges.length === 0)
                 return undefined;
-            if (((_b = (_a = repository.pullRequests.edges[0]) === null || _a === void 0 ? void 0 : _a.node) === null || _b === void 0 ? void 0 : _b.id) === undefined)
+            if (repository.pullRequests.edges[0]?.node?.id === undefined)
                 return undefined;
-            if (((_c = repository.pullRequests.edges[0]) === null || _c === void 0 ? void 0 : _c.node.id) === null)
+            if (repository.pullRequests.edges[0]?.node.id === null)
                 return undefined;
             return { id: repository.pullRequests.edges[0].node.id };
         };
@@ -75,7 +74,6 @@ class GitHub {
         });
     }
     async associatedPullRequest(expression) {
-        var _a, _b, _c;
         const octokit = github.getOctokit(this.token);
         const { repository } = await octokit.graphql({
             query: query.associatedPullRequest,
@@ -84,13 +82,13 @@ class GitHub {
             expression
         });
         const commit = repository.object;
-        if (((_a = commit.associatedPullRequests) === null || _a === void 0 ? void 0 : _a.edges) === undefined)
+        if (commit.associatedPullRequests?.edges === undefined)
             return undefined;
         if (commit.associatedPullRequests.edges === null)
             return undefined;
         if (commit.associatedPullRequests.edges.length === 0)
             return undefined;
-        if (((_c = (_b = commit.associatedPullRequests.edges[0]) === null || _b === void 0 ? void 0 : _b.node) === null || _c === void 0 ? void 0 : _c.author) === undefined)
+        if (commit.associatedPullRequests.edges[0]?.node?.author === undefined)
             return undefined;
         if (commit.associatedPullRequests.edges[0].node.author === null)
             return undefined;
@@ -163,7 +161,7 @@ class GitHub {
                     repo: this.name,
                     base: baseRefName,
                     head: headRefName,
-                    per_page: perPage !== null && perPage !== void 0 ? perPage : 100,
+                    per_page: perPage ?? 100,
                     page
                 });
             }
@@ -307,7 +305,7 @@ async function run() {
             core.setFailed(`Not found ${inputs.label}`);
             return;
         }
-        const template = new template_1.Template(pullRequests.flatMap(pr => pr !== null && pr !== void 0 ? pr : []), repository.labelId !== undefined ? [repository.labelId] : undefined);
+        const template = new template_1.Template(pullRequests.flatMap(pr => pr ?? []), repository.labelId !== undefined ? [repository.labelId] : undefined);
         if (inputs.isDryRun) {
             core.info('Dry-run. Not mutating Pull Request.');
             core.info(`title: ${template.title}`);
