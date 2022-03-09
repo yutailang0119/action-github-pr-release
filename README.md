@@ -40,7 +40,7 @@ jobs:
   github-pr-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: yutailang0119/action-github-pr-release@v2
         with:
           token: ${{ github.token }}
