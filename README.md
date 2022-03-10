@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: yutailang0119/action-github-pr-release@v2
+      - uses: yutailang0119/action-github-pr-release@v3
         with:
           token: ${{ github.token }}
           production-branch: main
