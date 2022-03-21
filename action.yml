@@ -1,6 +1,6 @@
 name: 'GitHub Action to create a "release pull request"'
 description: 'Create a "release pull request" that contains features list or pull requests.'
-author: 'Yutaro Muta'
+author: 'yutailang0119'
 inputs:
   token:
     description: 'Token for GitHub API'
